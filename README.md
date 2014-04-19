@@ -18,8 +18,7 @@ The following is my development environment, so it is (kind of) guaranteed to wo
 
 # Usage
 ```bash
-cp -a fixed_sensor_visualization.config{.EXAMPLE,} && ${EDITOR} fixed_sensor_visualization.config
-make cache
-make viz
+cp -a Makefile.config{.EXAMPLE,} && ${EDITOR} Makefile.config
+make view
 make publish
 ```
