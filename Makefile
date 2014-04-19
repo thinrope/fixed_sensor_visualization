@@ -11,7 +11,7 @@ NOW := $(shell date +%FT%T%Z)
 all:	out
 
 cache:	$(LIVE_SENSORS:%=cache/%.csv)
-out:	$(LIVE_SENSORS:%=out/%.png) out/index.html
+out:	$(LIVE_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png
 
 publish:	out
 	@$(PUBLISH_CMD)
@@ -30,6 +30,9 @@ out/%.png:	cache/%.csv timeplot.gpl $(CONFIG)
 out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl
 	@echo "Plotting $@ ..."
 	@gnuplot -e "IDs='$(LIVE_SENSORS)'; PERIOD_START=$(PLOT_SINCE);" ./timeplot_all.gpl
+
+out/nGeigie_map.png:	in/nGeigie_map.png
+	@cp -a $< $@
 
 out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/ALL.png
 	@echo "Compiling $@ ..."

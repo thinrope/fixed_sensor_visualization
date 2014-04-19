@@ -15,4 +15,5 @@
 	<body>
 		<h1>Safecast 2nd generation fixed radiation sensors (nGeigie)</h1>
 		<div align="center">
-			<img src="ALL.png" /><br />
+			<img src="ALL.png" />
+			<a href="https://www.google.com/fusiontables/embedviz?q=select+col3+from+14rS7ksuRpjncURPzdrGJ2KDay0DpfyofKDCA7LYP&viz=MAP&h=false&lat=36.883308376510676&lng=140.59094633129885&t=3&z=8&l=col3&y=2&tmplt=3&hml=KML"><img src="nGeigie_map.png" /></a><br />
