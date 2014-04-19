@@ -1,0 +1,7 @@
+LIVE_SENSORS := 40 41 42 49
+
+# NOTE: Do NOT forget the single quotes below!
+PLOT_SINCE := '6 weeks ago'
+
+PUBLISH_CMD := sudo rsync -HavPS out/ tr3.tar.bz:gamma/nGeigies/
+VIEW_CMD := firefox out/index.html
