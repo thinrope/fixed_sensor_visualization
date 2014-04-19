@@ -2,6 +2,7 @@ fixed_sensor_visualization
 ==========================
 
 A (web-based) visualization for fixed sensor (radiation) data.
+See example at http://gamma.tar.bz/nGeigies/
 
 # Description
 
