@@ -8,10 +8,10 @@ set key at graph 0.15, graph 0.99 width 1.0 height 0.8 spacing 0.8 box;
 set grid front;
 S_START=strptime("%Y-%m-%dT%H:%M:%SJST",system("date +%FT%TJST --date='" . PERIOD_START . "'"));
 S_END=strptime("%Y-%m-%dT%H:%M:%SJST",NOW);
-set xrange [ S_START : S_END ];
+set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 
 min_y = 0; max_y = 350;
-set yrange [min_y: max_y];
+set yrange [min_y: max_y]; set ylabel "CPM";
 set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set y2label "μSv/h" textcolor rgb "blue";
 set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue";
 
