@@ -3,11 +3,11 @@ reset;
 set encoding utf8;
 
 CPM2DRE=1.0/334.0;
-
-set key at graph 0.15, graph 0.99 width 1.0 height 0.8 box;
+NOW=system("date +%FT%TJST");
+set key at graph 0.15, graph 0.99 width 1.0 height 0.8 spacing 0.8 box;
 set grid front;
 S_START=strptime("%Y-%m-%dT%H:%M:%SJST",system("date +%FT%TJST --date='" . PERIOD_START . "'"));
-S_END=strptime("%Y-%m-%dT%H:%M:%SJST",system("date +%FT%TJST"));
+S_END=strptime("%Y-%m-%dT%H:%M:%SJST",NOW);
 set xrange [ S_START : S_END ];
 
 min_y = 0; max_y = 350;
@@ -17,7 +17,7 @@ set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue"
 
 set xdata time; set timefmt '"%Y-%m-%dT%H:%M:%SJST"'; set format x "%Y-%m-%d\n%H:%M JST";
 
-set title "Safecast fixed sensors";
+set title "Safecast fixed sensors, " . NOW;
 
 set term png enhanced small size 900, 400 font "Arial Unicode MS,10";
 set output "out/ALL.png";
