@@ -10,15 +10,7 @@ my $id = $ARGV[0];
 my $since_date = $ARGV[1];
 
 my $since_query = qx!date +since=%d%%2F%m%%2F%Y+00%%3A00%%3A00 --date='${since_date}'!; chomp $since_query;
-
-if (( ! -e "cache/$id.tmp" ) || (time - (stat "cache/$id.tmp")[9] > 3600))	# if missing or older than 1h, fetch it
-{
-	qx!wget -q 'https://api.safecast.org/en-US/devices/$id/measurements.csv?${since_query}&order=captured_at+asc' -O cache/$id.tmp!;
-}
-else
-{
-	print STDERR "\tNOTE:\t", "ID=$id is fresh enough, skipping fetch...\n";
-}
+qx!wget -q 'https://api.safecast.org/en-US/devices/$id/measurements.csv?${since_query}&order=captured_at+asc' -O cache/$id.tmp!;
 
 open(IN, "<cache/$id.tmp")
 	or die;
