@@ -1,13 +1,14 @@
-MAKEFLAGS := --output-sync=target --jobs 8 --max-load 3.5
+MAKEFLAGS += --no-builtin-rules --output-sync=target --jobs 8 --max-load 3.5
+.SUFFIXES:
 
 CONFIG := Makefile.config
 include $(CONFIG)
-
 NOW := $(shell date +%FT%T%Z)
+EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE)` ]] && touch cache/.run)
 
 .INTERMEDIATE:	cache/%.csv
 .PRECIOUS:	cache/%.csv
-
+.PHONY:		clean distclean mrproper all expire cache out publish view
 all:	out
 
 cache:	$(LIVE_SENSORS:%=cache/%.csv)
@@ -19,22 +20,25 @@ publish:	out
 view:	out
 	@$(VIEW_CMD)
 
-cache/%.csv:	cacher.pl
+cache/ out/ tmp/:
+	@mkdir -p $<
+
+cache/%.csv:	cacher.pl cache/.run | cache/
 	@echo "Fetching data to fill $@ ..."
 	@./cacher.pl $(basename $(notdir $@)) $(PLOT_SINCE)
 
-out/%.png:	cache/%.csv timeplot.gpl $(CONFIG)
+out/%.png:	cache/%.csv timeplot.gpl $(CONFIG) | out/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "ID=$(basename $(notdir $@)); PERIOD_START=$(PLOT_SINCE);" ./timeplot.gpl
 
-out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl
+out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl | out/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "IDs='$(LIVE_SENSORS)'; PERIOD_START=$(PLOT_SINCE);" ./timeplot_all.gpl
 
-out/nGeigie_map.png:	in/nGeigie_map.png
+out/nGeigie_map.png:	in/nGeigie_map.png | out/
 	@cp -a $< $@
 
-out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/ALL.png
+out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/ALL.png | out/
 	@echo "Compiling $@ ..."
 	@{ \
 		cat in/index.header; \

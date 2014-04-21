@@ -1,7 +1,11 @@
 LIVE_SENSORS := 40 41 42 49
 
+# syntax: option to `find` command
+MAX_AGE_TO_CACHE := -mmin +60
+
+# syntax: option to `date` command
 # NOTE: Do NOT forget the single quotes below!
 PLOT_SINCE := '6 weeks ago'
 
-PUBLISH_CMD := sudo rsync -HavPS out/ tr3.tar.bz:gamma/nGeigies/
+PUBLISH_CMD := rsync -HavPS --exclude=/.run --delete-excluded --delete out/ tr3.tar.bz:gamma/nGeigies/
 VIEW_CMD := firefox out/index.html
