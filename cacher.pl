@@ -1,6 +1,6 @@
 #!/usr/bin/perl
-use strict;
 use warnings;
+use strict;
 use utf8;
 use DateTime::Format::ISO8601;
 
