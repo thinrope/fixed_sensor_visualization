@@ -4,7 +4,7 @@ MAKEFLAGS += --no-builtin-rules --output-sync=target --jobs 8 --max-load 3.5
 CONFIG := Makefile.config
 include $(CONFIG)
 NOW := $(shell date +%FT%T%Z)
-EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE)` ]] && touch cache/.run)
+EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && touch cache/.run 2>/dev/null )
 
 .INTERMEDIATE:	cache/%.csv
 .PRECIOUS:	cache/%.csv
@@ -21,17 +21,20 @@ view:	out
 	@$(VIEW_CMD)
 
 cache/ out/ tmp/:
-	@mkdir -p $<
+	@mkdir -p $@
+
+cache/.run:	cache/
+	@$(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && touch cache/.run 2>/dev/null )
 
 cache/%.csv:	cacher.pl cache/.run | cache/
 	@echo "Fetching data to fill $@ ..."
 	@./cacher.pl $(basename $(notdir $@)) $(PLOT_SINCE)
 
-out/%.png:	cache/%.csv timeplot.gpl $(CONFIG) | out/
+out/%.png:	cache/%.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "ID=$(basename $(notdir $@)); PERIOD_START=$(PLOT_SINCE);" ./timeplot.gpl
 
-out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl | out/
+out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl | out/ tmp/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "IDs='$(LIVE_SENSORS)'; PERIOD_START=$(PLOT_SINCE);" ./timeplot_all.gpl
 
@@ -60,5 +63,6 @@ force:
 	@touch cache/*
 
 mrproper:	distclean
+	@rm -rf cache/ tmp/ out/
 	@test ! -e $(CONFIG) || { rm -i $(CONFIG); exit 0; }
 	@echo -ne "mrproper:\tdone.\n"
