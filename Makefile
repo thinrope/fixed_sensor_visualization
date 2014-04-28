@@ -4,6 +4,7 @@ MAKEFLAGS += --no-builtin-rules --output-sync=target --jobs 8 --max-load 3.5
 CONFIG := Makefile.config
 include $(CONFIG)
 NOW := $(shell date +%FT%T%Z)
+VERSION := $(shell git log -n 1 --pretty=format:"%h" 2>/dev/null)
 EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && touch cache/.run 2>/dev/null )
 
 .INTERMEDIATE:	cache/%.csv
@@ -46,7 +47,7 @@ out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/
 	@{ \
 		cat in/index.header; \
 		perl -e 'my $$q="\""; for my $$id (@ARGV) { print "\t\t\t", "<a href=$${q}https://api.safecast.org/en-US/devices/$${id}/measurements$${q}><img src=$${q}$${id}.png$${q} alt=$${q}Sensor_$${id}_data$${q} /></a>\n";}' $(LIVE_SENSORS); \
-		cat in/index.footer |perl -pe 's#__PUT__DATE__HERE__#$(NOW)#;'; \
+		cat in/index.footer |perl -pe 's#__PUT__DATE__HERE__#$(NOW) [$(VERSION)]#;'; \
 	} >$@
 
 
