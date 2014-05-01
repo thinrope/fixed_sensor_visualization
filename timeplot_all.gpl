@@ -4,7 +4,7 @@ set encoding utf8;
 
 CPM2DRE=1.0/334.0;
 NOW=system("date +%FT%TJST");
-set key at graph 0.15, graph 0.99 width 1.0 height 0.8 spacing 0.8 box;
+set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box at graph 0.23, graph 0.97;
 set grid front;
 S_START=strptime("%Y-%m-%dT%H:%M:%SJST",system("date +%FT%TJST --date='" . PERIOD_START . "'"));
 S_END=strptime("%Y-%m-%dT%H:%M:%SJST",NOW);
