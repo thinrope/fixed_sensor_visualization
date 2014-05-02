@@ -52,7 +52,7 @@ set ytics add ("-1σ    " STATS_mean_y - STATS_stddev_y);
 set object 1 rectangle from "2013-01-01", STATS_mean_y - STATS_stddev_y to "2015-01-01", STATS_mean_y + STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.1;
 set title sprintf("Safecast fixed sensor: id=%d, ΔT=5 min, total %d records, %0.1f±%0.1f CPM (%0.2f±%0.2f μSv/h)", ID, STATS_records, STATS_mean_y, STATS_stddev_y, STATS_mean_y * CPM2DRE , STATS_stddev_y * CPM2DRE);
 
-set term png enhanced font "Arial Unicode MS,8" size 600, 400 background "#ffffef";
+set term png enhanced font "Arial Unicode MS,8" size SIZE_BIG, 350 background "#ffffef";
 set output OUTFILE;
 #set term qt enhanced size 1500, 1000 font "Arial Unicode MS,10";
 
@@ -67,7 +67,7 @@ plot \
 #	DATAFILE u 1:(wma_12($2)) w l lw 3 title "CPM, 12-bin WMA";
 #	DATAFILE u 1:2 smooth bezier lw 3 title "CPM, bezier",
 
-set term png enhanced font "Arial Unicode MS,7" size 320, 200 background "#ffffff";
+set term png enhanced font "Arial Unicode MS,7" size SIZE_SMALL background "#ffffff";
 set output OUTFILE_small;
 set title sprintf("%0.1f±%0.1f CPM (%0.2f±%0.2f μSv/h)", STATS_mean_y, STATS_stddev_y, STATS_mean_y * CPM2DRE , STATS_stddev_y * CPM2DRE) font "Arial Unicode MS,9";
 unset ytics; set ytics;

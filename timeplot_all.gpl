@@ -19,7 +19,7 @@ set xdata time; set timefmt '"%Y-%m-%dT%H:%M:%SJST"'; set format x "%Y-%m-%d\n%H
 
 set title "Safecast fixed sensors, " . NOW;
 
-set term png enhanced font "Arial Unicode MS,10" size 900, 400 background "#ffffef";
+set term png enhanced font "Arial Unicode MS,10" size SIZE_ALL background "#ffffef";
 set output "out/ALL.png";
 
 #IDs = "40 41 42 49";
