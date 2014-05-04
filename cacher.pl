@@ -11,7 +11,7 @@ my $since_date = $ARGV[1];
 my $TIMEZONE = $ARGV[2];
 my $TZ = $ARGV[3];
 
-my $since_query = qx!date +since=%d%%2F%m%%2F%Y+00%%3A00%%3A00 --date='${since_date}'!; chomp $since_query;
+my $since_query = qx!TZ=${TIMEZONE} date +since=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${since_date}'!; chomp $since_query;
 qx!wget -q 'https://api.safecast.org/en-US/devices/$id/measurements.csv?${since_query}&order=captured_at+asc' -O cache/$id.tmp!;
 
 open(IN, "<cache/$id.tmp")
