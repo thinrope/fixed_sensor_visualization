@@ -49,7 +49,7 @@ set ytics add ("+1σ    " STATS_mean_y + STATS_stddev_y);
 set ytics add ("-1σ    " STATS_mean_y - STATS_stddev_y);
 
 set object 1 rectangle from "2013-01-01", STATS_mean_y - STATS_stddev_y to "2015-01-01", STATS_mean_y + STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.1;
-set title sprintf("Safecast fixed sensor: id=%d, ΔT=5 min, total %d records, %0.1f±%0.1f CPM (%0.2f±%0.2f μSv/h)", ID, STATS_records, STATS_mean_y, STATS_stddev_y, STATS_mean_y * CPM2DRE , STATS_stddev_y * CPM2DRE);
+set title sprintf("sensor=%d, total %d records, %0.1f±%0.1f CPM (%0.2f±%0.2f μSv/h)", ID, STATS_records, STATS_mean_y, STATS_stddev_y, STATS_mean_y * CPM2DRE , STATS_stddev_y * CPM2DRE);
 
 set term png enhanced font "Arial Unicode MS,8" size SIZE_BIG, 350 background "#ffffef";
 set output OUTFILE;
