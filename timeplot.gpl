@@ -3,9 +3,8 @@ reset;
 set encoding utf8;
 
 CPM2DRE=1.0/334.0;
+NOW=system("TZ=" . CONFIG_TZ . " date +%FT%T" . CONFIG_TZ);
 DATAFILE=sprintf("cache/%d.csv", ID);
-#TODAY=system("date +%F");
-#OUTFILE=sprintf("%d_%s.png", ID, TODAY);
 OUTFILE=sprintf("out/%d.png", ID);
 OUTFILE_small=sprintf("out/%d_small.png", ID);
 TABLE=sprintf("tmp/%d.data", ID);
@@ -13,24 +12,24 @@ TABLE=sprintf("tmp/%d.data", ID);
 #system("./fixed_sensor_cacher.pl " . ID . " '" . PERIOD_START . "'");
 
 # This converts the time string in column COL to a number of seconds
-iso2s(COL) = strptime("%Y-%m-%dT%H:%M:%SJST",strcol(COL));
-s2iso(seconds) = strftime("%Y-%m-%dT%H:%M:%SJST", seconds);
+iso2s(COL) = strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, strcol(COL));
+s2iso(seconds) = strftime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, seconds);
 
 set datafile separator ",";
 set key autotitle columnheader top right;
 set grid front;
-S_START=strptime("%Y-%m-%dT%H:%M:%SJST",system("date +%FT%TJST --date='" . PERIOD_START . "'"));
-S_END=strptime("%Y-%m-%dT%H:%M:%SJST",system("date +%FT%TJST"));
-set xrange [ S_START : S_END ];
+S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TZ . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
+S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, NOW);
+set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 stats DATAFILE u (iso2s(1)):2 nooutput;
 
 min_y = STATS_min_y; max_y = STATS_max_y;
-#min_y = 0; max_y = 300;
-set yrange [min_y: max_y];
+#min_y = 0; max_y = 350;
+set yrange [min_y: max_y]; set ylabel "CPM";
 set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set y2label "μSv/h" textcolor rgb "blue";
 set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue";
 
-set xdata time; set timefmt "%Y-%m-%dT%H:%M:%SJST"; set format x "%Y-%m-%d\n%H:%M JST";
+set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
 
 sma_12_init(x) = (s12=s11=s10=s9=s8=s7=s6=s5=s4=s3=s2=s1=x);
 sma_12_shift(x) = (s12=s11, s11=s10, s10=s9, s9=s8, s8=s7, s7=s6, s6=s5, s5=s4, s4=s3, s3=s2, s2=s1, s1 = x);
@@ -77,7 +76,7 @@ plot \
 	a = sma_24_init(STATS_mean_y), \
 	DATAFILE u 1:(sma_24($2)) w l ls 1 notitle;
 
-set format x "%Y-%m-%dT%H:%M:%SJST";
+set format x "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ;
 set table TABLE;
 plot a = sma_24_init(STATS_mean_y), DATAFILE u 1:(sma_24($2)) title sprintf("%d",ID);
 unset table;

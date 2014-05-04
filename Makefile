@@ -3,7 +3,7 @@ MAKEFLAGS += --no-builtin-rules --output-sync=target --jobs 8 --max-load 3.5
 
 CONFIG := Makefile.config
 include $(CONFIG)
-NOW := $(shell date +%FT%T%Z)
+NOW := $(shell TZ=$(CONFIG_TZ) date +%FT%T%Z)
 VERSION := $(shell git log -n 1 --pretty=format:"%h" 2>/dev/null)
 EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && touch cache/.run 2>/dev/null )
 
@@ -29,15 +29,15 @@ cache/.run:	cache/
 
 cache/%.csv:	cacher.pl cache/.run | cache/
 	@echo "Fetching data to fill $@ ..."
-	@./cacher.pl $(basename $(notdir $@)) $(PLOT_SINCE)
+	@./cacher.pl $(basename $(notdir $@)) $(PLOT_SINCE) $(CONFIG_TIMEZONE) $(CONFIG_TZ)
 
 out/%.png:	cache/%.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
-	@gnuplot -e "ID=$(basename $(notdir $@)); PERIOD_START=$(PLOT_SINCE); SIZE_BIG=$(SIZE_BIG); SIZE_SMALL=$(SIZE_SMALL);" ./timeplot.gpl
+	@gnuplot -e "ID=$(basename $(notdir $@)); PERIOD_START=$(PLOT_SINCE); SIZE_BIG=$(SIZE_BIG); SIZE_SMALL=$(SIZE_SMALL); CONFIG_TZ=$(CONFIG_TZ);" ./timeplot.gpl
 
 out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl | out/ tmp/
 	@echo "Plotting $@ ..."
-	@gnuplot -e "IDs='$(LIVE_SENSORS)'; PERIOD_START=$(PLOT_SINCE); SIZE_ALL=$(SIZE_ALL);" ./timeplot_all.gpl
+	@gnuplot -e "IDs='$(LIVE_SENSORS)'; PERIOD_START=$(PLOT_SINCE); SIZE_ALL=$(SIZE_ALL); CONFIG_TZ=$(CONFIG_TZ);" ./timeplot_all.gpl
 
 out/nGeigie_map.png:	in/nGeigie_map.png | out/
 	@cp -a $< $@
@@ -51,6 +51,8 @@ out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/
 	} >$@
 
 
+test:
+	@echo "It is $(NOW) in $(CONFIG_TIMEZONE)."
 
 clean:
 	@rm -rf cache/* tmp/*

@@ -12,5 +12,9 @@ SIZE_SMALL := '320, 200'
 SIZE_BIG := '500, 300'
 SIZE_ALL := '800, 400'
 
+# long and short version of graph timezone (server local TZ does NOT matter)
+CONFIG_TIMEZONE := 'Asia/Tokyo'
+CONFIG_TZ := 'JST'
+
 PUBLISH_CMD := rsync -HavPS --exclude=/.run --delete-excluded --delete out/ WEBSERVER:DIRECTORY/
-VIEW_CMD := firefox -no-remote out/index.html
+VIEW_CMD := firefox out/index.html
