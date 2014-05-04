@@ -34,6 +34,7 @@ cache/%.csv:	cacher.pl cache/.run | cache/
 out/%.png:	cache/%.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "ID=$(basename $(notdir $@)); PERIOD_START=$(PLOT_SINCE); SIZE_BIG=$(SIZE_BIG); SIZE_SMALL=$(SIZE_SMALL); CONFIG_TZ=$(CONFIG_TZ); CONFIG_TIMEZONE=$(CONFIG_TIMEZONE);" ./timeplot.gpl
+	@head -n3 tmp/$(basename $(notdir $@)).data |tail -n1|perl -ne '/"(.*)"/; print "$$1\n"' >tmp/$(basename $(notdir $@)).title
 
 out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl | out/ tmp/
 	@echo "Plotting $@ ..."

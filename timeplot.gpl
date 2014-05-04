@@ -68,7 +68,8 @@ plot \
 
 set term png enhanced font "Arial Unicode MS,7" size SIZE_SMALL background "#ffffff";
 set output OUTFILE_small;
-set title sprintf("%0.1f±%0.1f CPM (%0.2f±%0.2f μSv/h)", STATS_mean_y, STATS_stddev_y, STATS_mean_y * CPM2DRE , STATS_stddev_y * CPM2DRE) font "Arial Unicode MS,9";
+uSv_h = sprintf("%0.2f±%0.2f μSv/h", STATS_mean_y * CPM2DRE , STATS_stddev_y * CPM2DRE);
+set title sprintf("%0.1f±%0.1f CPM (%s)", STATS_mean_y, STATS_stddev_y, uSv_h) font "Arial Unicode MS,9";
 unset ytics; set ytics;
 unset y2label;
 set format x "%Y-%m-%d";
@@ -78,5 +79,5 @@ plot \
 
 set format x "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ;
 set table TABLE;
-plot a = sma_24_init(STATS_mean_y), DATAFILE u 1:(sma_24($2)) title sprintf("%d",ID);
+plot a = sma_24_init(STATS_mean_y), DATAFILE u 1:(sma_24($2)) title sprintf("%d: %s", ID, uSv_h);
 unset table;

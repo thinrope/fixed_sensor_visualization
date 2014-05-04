@@ -4,7 +4,8 @@ set encoding utf8;
 
 CPM2DRE=1.0/334.0;
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
-set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box at graph 0.25, graph 0.97;
+#set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box at graph 0.25, graph 0.97;
+set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box top center;
 set grid front;
 S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
 S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, NOW);
@@ -23,4 +24,5 @@ set term png enhanced font "Arial Unicode MS,10" size SIZE_ALL background "#ffff
 set output "out/ALL.png";
 set title "Safecast fixed sensors, " . NOW;
 
-plot for [ID in IDs] "tmp/" . ID . ".data" u 1:2 w l title ID;
+graph_title(n) = system("cat tmp/" . n . ".title");
+plot for [ID in IDs] "tmp/" . ID . ".data" u 1:2 w l title graph_title(ID);
