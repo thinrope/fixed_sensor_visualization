@@ -3,7 +3,7 @@ reset;
 set encoding utf8;
 
 CPM2DRE=1.0/334.0;
-NOW=system("TZ=" . CONFIG_TZ . " date +%FT%T" . CONFIG_TZ);
+NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
 DATAFILE=sprintf("cache/%d.csv", ID);
 OUTFILE=sprintf("out/%d.png", ID);
 OUTFILE_small=sprintf("out/%d_small.png", ID);
@@ -18,7 +18,7 @@ s2iso(seconds) = strftime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, seconds);
 set datafile separator ",";
 set key autotitle columnheader top right;
 set grid front;
-S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TZ . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
+S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
 S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, NOW);
 set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 stats DATAFILE u (iso2s(1)):2 nooutput;
