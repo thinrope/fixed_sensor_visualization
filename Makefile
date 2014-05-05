@@ -51,10 +51,7 @@ out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/
 	@echo "Compiling $@ ..."
 	@{ \
 		cat in/index.header; \
-		perl -e 'my $$q="\""; for my $$id (@ARGV) { print "\t\t\t", \
-			"<a href=$${q}https://api.safecast.org/en-US/devices/$${id}/measurements$${q}>\
-			<img src=$${q}$${id}.png$${q} alt=$${q}Sensor_$${id}_data$${q} width=$${q}$(CONFIG_WIDTH_BIG)$${q} height=$${q}$(CONFIG_HEIGHT_BIG)$${q} />\
-			</a>\n";}' $(LIVE_SENSORS); \
+		perl -e 'my $$q="\""; for my $$id (@ARGV) { print "\t\t\t", "<a href=$${q}https://api.safecast.org/en-US/devices/$${id}/measurements$${q}><img src=$${q}$${id}.png$${q} alt=$${q}Sensor_$${id}_data$${q} width=$${q}$(CONFIG_WIDTH_BIG)$${q} height=$${q}$(CONFIG_HEIGHT_BIG)$${q} /></a>\n";}' $(LIVE_SENSORS); \
 		cat in/index.footer |perl -pe 's#__PUT__DATE__HERE__#$(NOW) [$(VERSION)]#;'; \
 	} >$@
 
