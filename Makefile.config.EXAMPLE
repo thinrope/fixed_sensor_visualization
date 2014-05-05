@@ -7,10 +7,15 @@ MAX_AGE_TO_CACHE := -mmin +30
 # NOTE: Do NOT forget the single quotes below!
 PLOT_SINCE := '30 days ago'
 
-# syntax: WIDTH, HEIGHT
-SIZE_SMALL := '320, 200'
-SIZE_BIG := '500, 300'
-SIZE_ALL := '800, 400'
+# in px
+CONFIG_WIDTH_SMALL := 320
+CONFIG_HEIGHT_SMALL := 200
+
+CONFIG_WIDTH_BIG := 500
+CONFIG_HEIGHT_BIG := 300
+
+CONFIG_WIDTH_ALL := 800
+CONFIG_HEIGHT_ALL := 400
 
 # long and short version of graph timezone (server local TZ does NOT matter)
 CONFIG_TIMEZONE := 'Asia/Tokyo'
