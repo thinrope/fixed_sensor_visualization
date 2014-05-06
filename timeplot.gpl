@@ -1,4 +1,4 @@
-﻿#!/usr/bin/gnuplot
+#!/usr/bin/gnuplot
 reset;
 set encoding utf8;
 
