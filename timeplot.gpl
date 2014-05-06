@@ -1,4 +1,4 @@
-#!/usr/bin/gnuplot
+﻿#!/usr/bin/gnuplot
 reset;
 set encoding utf8;
 
@@ -21,7 +21,8 @@ S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, NOW);
 set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 stats DATAFILE u (iso2s(1)):2 nooutput;
 
-min_y = STATS_min_y; max_y = STATS_max_y;
+min_y = (1.1*STATS_min_y < STATS_mean_y - 4*STATS_stddev_y) ? 1.1*STATS_min_y : STATS_mean_y - 4*STATS_stddev_y; min_y = (min_y > 0) ? min_y : 0;
+max_y = (1.1*STATS_max_y > STATS_mean_y + 4*STATS_stddev_y) ? 1.1*STATS_max_y : STATS_mean_y + 4*STATS_stddev_y;
 #min_y = 0; max_y = 350;
 set yrange [min_y: max_y]; set ylabel "CPM";
 set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set y2label "μSv/h" textcolor rgb "blue";
@@ -35,11 +36,11 @@ sma_24(x) = (sma_24_shift(x), (k24+k23+k22+k21+k20+k19+k18+k17+k16+k15+k14+k13+k
 
 set ytics add ("mean" STATS_mean_y);
 #set y2tics add ("mean" STATS_mean_y * CPM2DRE);
-set ytics add ("+1σ    " STATS_mean_y + STATS_stddev_y);
-set ytics add ("-1σ    " STATS_mean_y - STATS_stddev_y);
+set ytics add ("+3σ    " STATS_mean_y + 3*STATS_stddev_y);
+set ytics add ("-3σ    " STATS_mean_y - 3*STATS_stddev_y);
 
-set object 1 rectangle from "2013-01-01", STATS_mean_y - STATS_stddev_y to "2015-01-01", STATS_mean_y + STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.1;
-set title sprintf("sensor=%d, total %d records, %0.1f±%0.1f CPM (%0.2f±%0.2f μSv/h)", ID, STATS_records, STATS_mean_y, STATS_stddev_y, STATS_mean_y * CPM2DRE , STATS_stddev_y * CPM2DRE);
+set object 1 rectangle from "2013-01-01", STATS_mean_y - 3*STATS_stddev_y to "2015-01-01", STATS_mean_y + 3*STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.1;
+set title sprintf("sensor=%d, total %d records, %0.1f±%0.1f CPM (%0.2f±%0.2f μSv/h)", ID, STATS_records, STATS_mean_y, 3*STATS_stddev_y, STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
 
 set term png enhanced font "Arial Unicode MS,8" size CONFIG_WIDTH_BIG, CONFIG_HEIGHT_BIG background "#ffffef";
 set output OUTFILE;
@@ -54,8 +55,8 @@ plot \
 unset object 1;
 set term png enhanced font "Arial Unicode MS,7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
 set output OUTFILE_small;
-uSv_h = sprintf("%0.2f±%0.2f μSv/h", STATS_mean_y * CPM2DRE , STATS_stddev_y * CPM2DRE);
-set title sprintf("%0.1f±%0.1f CPM (%s)", STATS_mean_y, STATS_stddev_y, uSv_h) font "Arial Unicode MS,9";
+uSv_h = sprintf("%0.2f±%0.2f μSv/h", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
+set title sprintf("%0.1f±%0.1f CPM (%s)", STATS_mean_y, 3*STATS_stddev_y, uSv_h) font "Arial Unicode MS,9";
 unset ytics; set ytics;
 set yrange [0: 350];
 unset y2tics; unset y2label;
