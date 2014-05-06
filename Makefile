@@ -58,6 +58,7 @@ out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/
 
 test:
 	@echo "It is $(NOW) in $(CONFIG_TIMEZONE)."
+	@echo "Current version: $(VERSION)"
 
 clean:
 	@rm -rf cache/* tmp/*
