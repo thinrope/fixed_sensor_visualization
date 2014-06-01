@@ -14,6 +14,15 @@ iso2s(COL) = strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, strcol(COL));
 s2iso(seconds) = strftime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, seconds);
 
 set datafile separator ",";
+
+# set palette
+set cbtics (0.03, 0.14, 0.43, 1.65, 65.54);
+set palette model RGB;
+set palette file "cyanhalo_lut_4xlog10.csv" u 1:2:3;
+set cbrange [0.03: 65.54];
+unset colorbox;
+
+
 set key autotitle columnheader top right;
 set grid front;
 S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
@@ -32,7 +41,8 @@ set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m
 
 sma_24_init(x) = (k24=k23=k22=k21=k20=k19=k18=k17=k16=k15=k14=k13=k12=k11=k10=k9=k8=k7=k6=k5=k4=k3=k2=k1=x);
 sma_24_shift(x) = (k24=k23, k23=k22, k22=k21, k21=k20, k20=k19, k19=k18, k18=k17, k17=k16, K16=k15, K15=k14, k14=k13, k13=k12, k12=k11, k11=k10, k10=k9, k9=k8, k8=k7, k7=k6, k6=k5, k5=k4, k4=k3, k3=k2, k2=k1, k1 = x);
-sma_24(x) = (sma_24_shift(x), (k24+k23+k22+k21+k20+k19+k18+k17+k16+k15+k14+k13+k12+k11+k10+k9+k8+k7+k6+k5+k4+k3+k2+k1)/24);
+sma_24_RO(x) = (k24+k23+k22+k21+k20+k19+k18+k17+k16+k15+k14+k13+k12+k11+k10+k9+k8+k7+k6+k5+k4+k3+k2+k1)/24;
+sma_24(x) = (sma_24_shift(x), sma_24_RO(x));
 
 #set ytics add ("mean" STATS_mean_y);
 #set y2tics add ("mean" STATS_mean_y * CPM2DRE);
@@ -55,17 +65,19 @@ plot \
 
 # plot small PNG for Fusion tables
 unset object 1; unset arrow 2;
-set term png enhanced font "Arial Unicode MS,7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
+set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
 set output OUTFILE_small;
 uSv_h = sprintf("%0.2f±%0.2f μSv/h", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
-set title sprintf("%0.1f±%0.1f CPM (%s)", STATS_mean_y, 3*STATS_stddev_y, uSv_h) font "Arial Unicode MS,9";
+set title sprintf("%s (%0.1f±%0.1f CPM)", uSv_h, STATS_mean_y, 3*STATS_stddev_y) font "Arial Unicode MS,9";
 unset ytics; set ytics;
-set yrange [0: 350];
+set yrange [0: 1.1];
 unset y2tics; unset y2label;
+set ylabel "μSv/h" font "Arial Unicode MS,9";
 set format x "%Y-%m-%d";
+
 plot \
 	a = sma_24_init(STATS_mean_y), \
-	DATAFILE u 1:(sma_24($2)) w l ls 2 notitle;
+	DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) w l lw 1 palette notitle;
 
 
 # save data for ALL.png
