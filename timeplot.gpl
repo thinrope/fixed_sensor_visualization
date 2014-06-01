@@ -65,7 +65,7 @@ unset y2tics; unset y2label;
 set format x "%Y-%m-%d";
 plot \
 	a = sma_24_init(STATS_mean_y), \
-	DATAFILE u 1:(sma_24($2)) w l ls 1 notitle;
+	DATAFILE u 1:(sma_24($2)) w l ls 2 notitle;
 
 
 # save data for ALL.png
