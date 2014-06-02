@@ -17,7 +17,7 @@ GNUPLOT_VARS := \
 all:	out
 
 cache:	$(LIVE_SENSORS:%=cache/%.csv)
-out:	$(LIVE_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png
+out:	$(LIVE_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png out/tilemap.png
 
 publish:	out
 	@$(PUBLISH_CMD)
@@ -45,6 +45,9 @@ out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl | out/ tmp/
 	@gnuplot -e "IDs='$(LIVE_SENSORS)'; $(GNUPLOT_VARS)" ./timeplot_all.gpl
 
 out/nGeigie_map.png:	in/nGeigie_map.png | out/
+	@cp -a $< $@
+
+out/tilemap.png:	in/tilemap.png | out/
 	@cp -a $< $@
 
 out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/ALL.png | out/
