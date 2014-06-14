@@ -4,6 +4,7 @@ set encoding utf8;
 
 CPM2DRE=1.0/334.0;
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
+NOW_YEAR=system("TZ=" . CONFIG_TIMEZONE . " date +%Y");
 DATAFILE=sprintf("cache/%d.csv", ID);
 OUTFILE=sprintf("out/%d.png", ID);
 OUTFILE_small=sprintf("out/%d_small.png", ID);
@@ -33,8 +34,9 @@ stats DATAFILE u (iso2s(1)):2 nooutput;
 min_y = (1.1*STATS_min_y < STATS_mean_y - 4*STATS_stddev_y) ? 1.1*STATS_min_y : STATS_mean_y - 4*STATS_stddev_y; min_y = (min_y > 0) ? min_y : 0;
 max_y = (1.1*STATS_max_y > STATS_mean_y + 4*STATS_stddev_y) ? 1.1*STATS_max_y : STATS_mean_y + 4*STATS_stddev_y;
 #min_y = 0; max_y = 350;
-set yrange [min_y: max_y]; set ylabel "CPM";
-set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set y2label "μSv/h" textcolor rgb "blue";
+set yrange [min_y: max_y]; set ytics nomirror textcolor rgb "dark-green"; set label 31 "{/*1.1 CPM}" at graph 0.0, 1.03 right textcolor rgb "dark-green";
+set arrow 1 nohead front from graph 0, graph 0 to graph 0, graph 1 lc rgb "dark-green";
+set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set label 32 "{/*1.1 μSv/h}" at graph 1.0, graph 1.03 left textcolor rgb "blue";
 set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue";
 
 set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
@@ -49,35 +51,37 @@ sma_24(x) = (sma_24_shift(x), sma_24_RO(x));
 #set ytics add ("+3σ    " STATS_mean_y + 3*STATS_stddev_y);
 #set ytics add ("-3σ    " STATS_mean_y - 3*STATS_stddev_y);
 
-set object 1 rectangle from "2013-01-01", STATS_mean_y - 3*STATS_stddev_y to "2015-01-01", STATS_mean_y + 3*STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.1 border lc rgb "cyan";
-set title sprintf("%0.2f±%0.2f μSv/h (%0.1f±%0.1f CPM), total %d measurements", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) font "Arial Unicode MS,9";
-
-set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,8" size CONFIG_WIDTH_BIG, CONFIG_HEIGHT_BIG background "#ffffef";
+# Large PNGs for gamma.tar.bz
+FONT="Arial Unicode MS";
+set term png enhanced notransparent nointerlace truecolor butt font FONT . ",8" size CONFIG_WIDTH_BIG, CONFIG_HEIGHT_BIG background "#ffffef";
 set output OUTFILE;
 
-set label 13 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0215, graph 0.945 font "Arial Unicode MS,15" textcolor rgb "gray";
-set label 14 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0225, graph 0.935 font "Arial Unicode MS,15" textcolor rgb "black";
-set label 15 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0250, graph 0.930 font "Arial Unicode MS,15" textcolor rgb "#FF0066";
+set object 1 rectangle from "2013-01-01", STATS_mean_y - 3*STATS_stddev_y to "2033-01-01", STATS_mean_y + 3*STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.1 border lc rgb "cyan";
+set title sprintf("%0.2f±%0.2f μSv/h (%0.1f±%0.1f CPM), total %d measurements", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) font FONT . ",9";
+
+#set label 13 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0215, graph 0.940 font FONT . ",15" textcolor rgb "black";
+set label 14 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0235, graph 0.930 font FONT . ",15" textcolor rgb "dark-gray";
+set label 15 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0240, graph 0.925 font FONT . ",15" textcolor rgb "#FF0066";
 set style line 1 lc rgb "orange";
 plot \
 	DATAFILE u 1:2 w p ls 1 notitle, \
 	a = sma_24_init(STATS_mean_y), \
 	DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) axes x1y2 w l lw 2 palette title "2 h SMA (24-bin)", \
-	-100 w filledcurves fc rgb "cyan" fs transparent solid .1 title "±3σ area";
+	-100 w filledcurves fc rgb "cyan" fs transparent solid .1 title "±3{/Arial-Unicode-MS σ} area";
 
 
-# plot small PNG for Fusion tables
-unset object 1; unset arrow 2;
-unset for [i=13:15] label i;
-set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
+# small PNGs for Fusion tables
+FONT="Futura Std Medium";
+set term png enhanced notransparent nointerlace truecolor butt font FONT . ",7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
 set output OUTFILE_small;
-uSv_h = sprintf("%0.2f±%0.2f μSv/h", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
-set title sprintf("%s (%0.1f±%0.1f CPM)", uSv_h, STATS_mean_y, 3*STATS_stddev_y) font "Arial Unicode MS,9";
-unset ytics; set ytics;
-set yrange [0: 1.1];
-unset y2tics; unset y2label;
-set ylabel "μSv/h" font "Arial Unicode MS,9";
-set format x "%Y-%m-%d";
+
+unset for [i in "1"] object i; unset for [i in "1 2"] arrow i; unset for [i in "13 14 15 31 32"] label i;
+uSv_h = sprintf("%0.2f ± %0.2f μSv/h", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
+set title sprintf("%s (%0.1f ± %0.1f CPM)", uSv_h, STATS_mean_y, 3*STATS_stddev_y) font FONT . ",9";
+unset ytics; unset y2tics;
+set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.03 right; set format y "%0.1f";
+set grid x y;
+set format x "%m/%d"; set xtics offset 0, graph 0.03; set label 32 NOW_YEAR at graph 0.5, graph -0.17 center;
 
 plot \
 	a = sma_24_init(STATS_mean_y), \
