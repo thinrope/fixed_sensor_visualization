@@ -78,7 +78,7 @@ FONT="Futura Std Medium";
 set term png enhanced notransparent nointerlace truecolor butt font FONT . ",7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
 set output OUTFILE_small;
 
-unset for [i in "1"] object i; unset for [i in "1 2"] arrow i; unset for [i in "13 14 15 31 32"] label i;
+unset for [i in "1"] object i; unset for [i in "1 2"] arrow i; unset for [i in "1 2 3 13 14 15 31 32"] label i;
 uSv_h = sprintf("%0.2f ± %0.2f μSv/h", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
 set title sprintf("%s (%0.1f ± %0.1f CPM)", uSv_h, STATS_mean_y, 3*STATS_stddev_y) font FONT . ",9";
 unset ytics; unset y2tics;
