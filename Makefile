@@ -11,13 +11,14 @@ GNUPLOT_VARS := \
 	CONFIG_HEIGHT_SMALL=$(CONFIG_HEIGHT_SMALL); CONFIG_HEIGHT_BIG=$(CONFIG_HEIGHT_BIG); CONFIG_HEIGHT_ALL=$(CONFIG_HEIGHT_ALL); \
 	PERIOD_START=$(PLOT_SINCE); CONFIG_TZ=$(CONFIG_TZ); CONFIG_TIMEZONE=$(CONFIG_TIMEZONE);
 
-.INTERMEDIATE:	cache/%.csv
-.PRECIOUS:	cache/%.csv
-.PHONY:		clean distclean mrproper all expire cache out publish view
+.INTERMEDIATE:	cache/%.csv daily/%.csv
+.PRECIOUS:	cache/%.csv daily/%.csv
+.PHONY:		clean distclean mrproper all expire cache out daily publish view
 all:	out
 
 cache:	$(LIVE_SENSORS:%=cache/%.csv) cache/CPM2DRE.csv
 out:	$(LIVE_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png out/tilemap.png
+daily:	$(LIVE_SENSORS:%=daily/%.png)
 
 publish:	out
 	@$(PUBLISH_CMD)
@@ -25,7 +26,7 @@ publish:	out
 view:	out
 	@$(VIEW_CMD)
 
-cache/ out/ tmp/:
+cache/ out/ tmp/ daily/:
 	@mkdir -p $@
 
 cache/.run:	cache/
@@ -62,13 +63,21 @@ out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/
 		cat in/index.footer |perl -pe 's#__PUT__DATE__HERE__#$(NOW) [<a href="https://github.com/thinrope/fixed_sensor_visualization/commit/$(VERSION)">$(VERSION)</a>]#;'; \
 	} >$@
 
+daily/%.csv:	cache/%.csv $(CONFIG) | daily/
+	@echo "Crunching stats for $@ ..."
+	@cat $< |perl -MStatistics::Descriptive  -e 'while (<>){ m#\d{4}-\d{2}-\d{2}T(\d{2}):\d{2}:\d{2}JST,([0-9.]+)#; $$A{$$1}=Statistics::Descriptive::Sparse->new() unless (defined $$A{$$1}); $$A{$$1}->add_data($$2);} print map {sprintf("%s,%0.3f,%0.3f,%d\n", $$_, $$A{$$_}->mean(), 3.0 * $$A{$$_}->standard_deviation(),$$A{$$_}->count())} sort keys %A;' >$@
+
+daily/%.png:	daily/%.csv $(CONFIG) | daily/
+	@echo "Plotting $@ ..."
+	@gnuplot -e 'reset; set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,8" size 800, 600 background "#ffffef"; set output "$@"; set datafile separator ","; set xrange [-0.5:24.5]; set xtics 0 3; set grid; set format x "%02.0f"; plot "$<" u ($$1+0.5):2 w lines lw 3 title "daily average CPM (per hour)", "" u ($$1+0.5):2:3 w yerrorbars title "3σ";'
+
 
 test:
 	@echo "It is $(NOW) in $(CONFIG_TIMEZONE)."
 	@echo "Current version: $(VERSION)"
 
 clean:
-	@rm -rf cache/* tmp/*
+	@rm -rf cache/* tmp/* daily/*
 	@echo -ne "clean:\tdone.\n"
 
 distclean:	clean
@@ -79,7 +88,7 @@ force:
 	@touch cache/*
 
 mrproper:	distclean
-	@rm -rf cache/ tmp/ out/
+	@rm -rf cache/ tmp/ out/ daily/
 	@test ! -e $(CONFIG) || { rm -i $(CONFIG); exit 0; }
 	@echo -ne "mrproper:\tdone.\n"
 
