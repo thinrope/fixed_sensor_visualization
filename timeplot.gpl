@@ -57,7 +57,10 @@ set term png enhanced notransparent nointerlace truecolor butt font FONT . ",8" 
 set output OUTFILE;
 
 set object 1 rectangle from "2013-01-01", STATS_mean_y - 3*STATS_stddev_y to "2033-01-01", STATS_mean_y + 3*STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.1 border lc rgb "cyan";
-set title sprintf("%0.2f±%0.2f μSv/h (%0.1f±%0.1f CPM), total %d measurements", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) font FONT . ",9";
+set title sprintf("&{%0.2f±%0.2f μSv/h (%0.1f±%0.1f CPM), total %d measurements}",	STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) font FONT . ",9";
+set label 1 sprintf("%0.2f±%0.2f μSv/h&{ (%0.1f±%0.1f CPM), total %d measurements}",	STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) at screen 0.5, screen 0.91 center font FONT . ",9" tc rgb "blue";
+set label 2 sprintf("&{%0.2f±%0.2f μSv/h (}%0.1f±%0.1f CPM&{), total %d measurements}",	STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) at screen 0.5, screen 0.92 center font FONT . ",9" tc rgb "dark-green";
+set label 3 sprintf("&{%0.2f±%0.2f μSv/h} (&{%0.1f±%0.1f CPM}), total %d measurements",	STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) at screen 0.5, screen 0.92 center font FONT . ",9" tc rgb "black";
 
 #set label 13 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0215, graph 0.940 font FONT . ",15" textcolor rgb "black";
 set label 14 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0235, graph 0.930 font FONT . ",15" textcolor rgb "dark-gray";
