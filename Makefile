@@ -16,7 +16,7 @@ GNUPLOT_VARS := \
 .PHONY:		clean distclean mrproper all expire cache out publish view
 all:	out
 
-cache:	$(LIVE_SENSORS:%=cache/%.csv)
+cache:	$(LIVE_SENSORS:%=cache/%.csv) cache/CPM2DRE.csv
 out:	$(LIVE_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png out/tilemap.png
 
 publish:	out
@@ -35,7 +35,11 @@ cache/%.csv:	cacher.pl cache/.run | cache/
 	@echo "Fetching data to fill $@ ..."
 	@./cacher.pl $(basename $(notdir $@)) $(PLOT_SINCE) $(CONFIG_TIMEZONE) $(CONFIG_TZ)
 
-out/%.png:	cache/%.csv timeplot.gpl $(CONFIG) | out/ tmp/
+cache/CPM2DRE.csv:	cache/.run | cache/
+	@echo "Fetching for $@ ..."
+	@wget -q "https://www.google.com/fusiontables/exporttable?query=select+*+from+1nNOIamxzwwZGkwX8z9XYpgpTG4FwGSKaL02NcD7u" -O $@
+
+out/%.png:	cache/%.csv cache/CPM2DRE.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "ID=$(basename $(notdir $@)); $(GNUPLOT_VARS)" ./timeplot.gpl
 	@head -n3 tmp/$(basename $(notdir $@)).data |tail -n1|perl -ne '/"(.*)"/; print "$$1\n"' >tmp/$(basename $(notdir $@)).title

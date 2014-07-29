@@ -2,7 +2,7 @@
 reset;
 set encoding utf8;
 
-CPM2DRE=1.0/334.0;
+CPM2DRE=system("cat cache/CPM2DRE.csv|fgrep " . ID . " |cut -d, -f2");
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
 NOW_YEAR=system("TZ=" . CONFIG_TIMEZONE . " date +%Y");
 DATAFILE=sprintf("cache/%d.csv", ID);
