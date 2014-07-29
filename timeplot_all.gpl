@@ -2,19 +2,16 @@
 reset;
 set encoding utf8;
 
-CPM2DRE=1.0/334.0;
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
 #set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box at graph 0.25, graph 0.97;
-set key maxrows 5 width 1.0 height 0.8 spacing 0.8 box top center;
-set grid front;
+set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box top center;
+set grid x y2 front; 
 S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
 S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, NOW);
 set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 
-#min_y = STATS_min_y; max_y = STATS_max_y;
-min_y = 0; max_y = 350;
-set yrange [min_y: max_y]; set ylabel "CPM";
-set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set y2label "μSv/h" textcolor rgb "blue";
+unset ytics;
+set y2range [0.0 : 1.2]; set y2tics nomirror textcolor rgb "blue"; set y2label "μSv/h" textcolor rgb "blue";
 set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue";
 
 set xdata time; set timefmt '"%Y-%m-%dT%H:%M:%S' . CONFIG_TZ . '"'; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
@@ -25,4 +22,4 @@ set output "out/ALL.png";
 set title "Safecast fixed sensors (mean±3σ), " . NOW;
 
 graph_title(n) = system("cat tmp/" . n . ".title");
-plot for [ID in IDs] "tmp/" . ID . ".data" u 1:2 w l title graph_title(ID);
+plot for [ID in IDs] "tmp/" . ID . ".data" u 1:2 axes x1y2 w l lw 2 title graph_title(ID);
