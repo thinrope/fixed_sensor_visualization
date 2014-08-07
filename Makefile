@@ -32,11 +32,11 @@ cache/ out/ tmp/ daily/:
 cache/.run:	cache/
 	@$(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && touch cache/.run 2>/dev/null )
 
-cache/%.csv:	cacher.pl cache/.run | cache/
+cache/%.csv:	cacher.pl cache/.run ${CONFIG} | cache/
 	@echo "Fetching data to fill $@ ..."
 	@./cacher.pl $(basename $(notdir $@)) $(PLOT_SINCE) $(CONFIG_TIMEZONE) $(CONFIG_TZ)
 
-cache/nGeigie_map.csv:	cache/.run | cache/
+cache/nGeigie_map.csv:	cache/.run ${CONFIG} | cache/
 	@echo "Fetching for $@ ..."
 	@wget -q "https://www.google.com/fusiontables/exporttable?query=select+*+from+14rS7ksuRpjncURPzdrGJ2KDay0DpfyofKDCA7LYP" -O $@
 
@@ -45,17 +45,17 @@ out/%.png:	cache/%.csv cache/nGeigie_map.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@gnuplot -e "ID=$(basename $(notdir $@)); $(GNUPLOT_VARS)" ./timeplot.gpl
 	@head -n3 tmp/$(basename $(notdir $@)).data |tail -n1|perl -ne '/"(.*)"/; print "$$1\n"' >tmp/$(basename $(notdir $@)).title
 
-out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl | out/ tmp/
+out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl ${CONFIG} | out/ tmp/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "IDs='$(LIVE_SENSORS)'; $(GNUPLOT_VARS)" ./timeplot_all.gpl
 
-out/nGeigie_map.png:	in/nGeigie_map.png | out/
+out/nGeigie_map.png:	in/nGeigie_map.png ${CONFIG} | out/
 	@cp -a $< $@
 
-out/tilemap.png:	in/tilemap.png | out/
+out/tilemap.png:	in/tilemap.png ${CONFIG} | out/
 	@cp -a $< $@
 
-out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/ALL.png | out/
+out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/ALL.png ${CONFIG} | out/
 	@echo "Compiling $@ ..."
 	@{ \
 		cat in/index.header; \
@@ -67,7 +67,7 @@ daily/%.csv:	cache/%.csv $(CONFIG) | daily/
 	@echo "Crunching stats for $@ ..."
 	@cat $< |perl -MStatistics::Descriptive  -e 'while (<>){ m#\d{4}-\d{2}-\d{2}T(\d{2}):\d{2}:\d{2}JST,([0-9.]+)#; $$A{$$1}=Statistics::Descriptive::Sparse->new() unless (defined $$A{$$1}); $$A{$$1}->add_data($$2);} print map {sprintf("%s,%0.3f,%0.3f,%d\n", $$_, $$A{$$_}->mean(), 3.0 * $$A{$$_}->standard_deviation(),$$A{$$_}->count())} sort keys %A;' >$@
 
-daily/%.png:	daily/%.csv $(CONFIG) | daily/
+daily/%.png:	daily/%.csv $(CONFIG) timeplot_daily.gpl | daily/
 	@echo "Plotting $@ ..."
 	@gnuplot -e 'reset; set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,8" size 800, 600 background "#ffffef"; set output "$@"; set datafile separator ","; set xrange [-0.5:24.5]; set xtics 0 3; set grid; set format x "%02.0f"; plot "$<" u ($$1+0.5):2 w lines lw 3 title "daily average CPM (per hour)", "" u ($$1+0.5):2:3 w yerrorbars title "3σ";'
 
