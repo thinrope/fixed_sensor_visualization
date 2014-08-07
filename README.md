@@ -3,7 +3,8 @@ fixed_sensor_visualization
 
 A (web-based) visualization for fixed sensor (radiation) data.
 
-See example at http://gamma.tar.bz/nGeigies/
+See full example at http://gamma.tar.bz/nGeigies/
+
 A slightly modified version of this code is making the graphs on http://realtime.safecast.org/
 
 # Description
