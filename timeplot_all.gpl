@@ -6,8 +6,8 @@ NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
 #set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box at graph 0.25, graph 0.97;
 set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box top center;
 set grid x y2 front; 
-S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
-S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, NOW);
+S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_START);
+S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_END);
 set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 
 unset ytics;

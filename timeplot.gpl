@@ -3,8 +3,6 @@ reset;
 set encoding utf8;
 
 CPM2DRE=system("cat cache/nGeigie_map.csv|fgrep " . ID . " |cut -d, -f2");
-NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
-NOW_YEAR=system("TZ=" . CONFIG_TIMEZONE . " date +%Y");
 DATAFILE=sprintf("cache/%d.csv", ID);
 OUTFILE=sprintf("out/%d.png", ID);
 OUTFILE_small=sprintf("out/%d_small.png", ID);
@@ -26,8 +24,9 @@ unset colorbox;
 
 set key autotitle columnheader top right;
 set grid xtics front;
-S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
-S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, NOW);
+S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_START);
+S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_END);
+END_YEAR=system("TZ=" . CONFIG_TIMEZONE . " date +%Y --date='" . PERIOD_END . "'");
 
 set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 stats DATAFILE u (iso2s(1)):2 nooutput;
@@ -36,9 +35,9 @@ three_sigma_percent=sprintf("±%0.1f%%",	100.0 * 3*STATS_stddev_y / STATS_mean_y
 min_y = (1.1*STATS_min_y < STATS_mean_y - 4*STATS_stddev_y) ? 1.1*STATS_min_y : STATS_mean_y - 4*STATS_stddev_y; min_y = (min_y > 0) ? min_y : 0;
 max_y = (1.1*STATS_max_y > STATS_mean_y + 4*STATS_stddev_y) ? 1.1*STATS_max_y : STATS_mean_y + 4*STATS_stddev_y;
 #min_y = 0; max_y = 350;
-set yrange [min_y: max_y]; set ytics nomirror textcolor rgb "dark-green"; set label 31 "{/*1.1 CPM}" at graph 0.0, 1.03 right textcolor rgb "dark-green";
+set yrange [min_y: max_y]; set ytics nomirror textcolor rgb "dark-green"; set label 31 "{/*1.1 CPM}" at graph 0.0, 1.04 right textcolor rgb "dark-green";
 set arrow 1 nohead front from graph 0, graph 0 to graph 0, graph 1 lc rgb "dark-green";
-set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set label 32 "{/*1.1 μSv/h}" at graph 1.0, graph 1.03 left textcolor rgb "blue";
+set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set label 32 "{/*1.1 μSv/h}" at graph 1.0, graph 1.04 left textcolor rgb "blue";
 set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue";
 
 set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
@@ -86,7 +85,7 @@ set title sprintf("%s (%0.1f ± %0.1f CPM)", uSv_h, STATS_mean_y, 3*STATS_stddev
 unset ytics; unset y2tics;
 set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.03 right; set format y "%0.1f";
 set grid x y;
-set format x "%m/%d"; set xtics offset 0, graph 0.03; set label 32 NOW_YEAR at graph 0.5, graph -0.17 center;
+set format x "%m/%d"; set xtics offset 0, graph 0.03; set label 32 END_YEAR at graph 0.5, graph -0.17 center;
 
 plot \
 	a = sma_24_init(STATS_mean_y), \

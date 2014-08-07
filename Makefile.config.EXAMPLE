@@ -5,7 +5,8 @@ MAX_AGE_TO_CACHE := -mmin +30
 
 # syntax: option to `date` command
 # NOTE: Do NOT forget the single quotes below!
-PLOT_SINCE := '30 days ago'
+PLOT_FROM := '30 days ago'
+PLOT_TO := 'now'
 
 # in px
 CONFIG_WIDTH_SMALL := 320

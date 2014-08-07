@@ -3,13 +3,17 @@ MAKEFLAGS += --no-builtin-rules --output-sync=target --jobs 8 --max-load 3.5
 
 CONFIG := Makefile.config
 include $(CONFIG)
+
 NOW := $(shell TZ=$(CONFIG_TIMEZONE) date +%FT%T%Z)
+PERIOD_START := $(shell TZ=$(CONFIG_TIMEZONE) date +%FT%T%Z --date=$(PLOT_FROM))
+PERIOD_END := $(shell TZ=$(CONFIG_TIMEZONE) date +%FT%T%Z --date=$(PLOT_TO))
+
 VERSION := $(shell git log -n 1 --pretty=format:"%h" 2>/dev/null)
 EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && touch cache/.run 2>/dev/null )
 GNUPLOT_VARS := \
 	CONFIG_WIDTH_SMALL=$(CONFIG_WIDTH_SMALL); CONFIG_WIDTH_BIG=$(CONFIG_WIDTH_BIG); CONFIG_WIDTH_ALL=$(CONFIG_WIDTH_ALL); \
 	CONFIG_HEIGHT_SMALL=$(CONFIG_HEIGHT_SMALL); CONFIG_HEIGHT_BIG=$(CONFIG_HEIGHT_BIG); CONFIG_HEIGHT_ALL=$(CONFIG_HEIGHT_ALL); \
-	PERIOD_START=$(PLOT_SINCE); CONFIG_TZ=$(CONFIG_TZ); CONFIG_TIMEZONE=$(CONFIG_TIMEZONE);
+	PERIOD_START='$(PERIOD_START)'; PERIOD_END='$(PERIOD_END)'; CONFIG_TZ=$(CONFIG_TZ); CONFIG_TIMEZONE=$(CONFIG_TIMEZONE);
 
 .INTERMEDIATE:	cache/%.csv daily/%.csv
 .PRECIOUS:	cache/%.csv daily/%.csv
@@ -34,7 +38,7 @@ cache/.run:	cache/
 
 cache/%.csv:	cacher.pl cache/.run ${CONFIG} | cache/
 	@echo "Fetching data to fill $@ ..."
-	@./cacher.pl $(basename $(notdir $@)) $(PLOT_SINCE) $(CONFIG_TIMEZONE) $(CONFIG_TZ)
+	@./cacher.pl $(basename $(notdir $@)) $(PLOT_FROM) $(PLOT_TO) $(CONFIG_TIMEZONE) $(CONFIG_TZ)
 
 cache/nGeigie_map.csv:	cache/.run ${CONFIG} | cache/
 	@echo "Fetching for $@ ..."
