@@ -1,0 +1,29 @@
+#!/usr/bin/gnuplot
+reset;
+set encoding utf8;
+ID=42;
+CONFIG_TZ="JST";
+
+DATAFILE=sprintf("<(cat cache/%d.csv| perl -pe 's/T/,/')", ID);
+
+set datafile separator ",";
+
+sma_24_init(x) = (k24=k23=k22=k21=k20=k19=k18=k17=k16=k15=k14=k13=k12=k11=k10=k9=k8=k7=k6=k5=k4=k3=k2=k1=x);
+sma_24_shift(x) = (k24=k23, k23=k22, k22=k21, k21=k20, k20=k19, k19=k18, k18=k17, k17=k16, K16=k15, K15=k14, k14=k13, k13=k12, k12=k11, k11=k10, k10=k9, k9=k8, k8=k7, k7=k6, k6=k5, k5=k4, k4=k3, k3=k2, k2=k1, k1 = x);
+sma_24_RO(x) = (k24+k23+k22+k21+k20+k19+k18+k17+k16+k15+k14+k13+k12+k11+k10+k9+k8+k7+k6+k5+k4+k3+k2+k1)/24;
+sma_24(x) = (sma_24_shift(x), sma_24_RO(x));
+
+set xdata time; set timefmt x "%H:%M:%S" . CONFIG_TZ; set format x "%H:%M " . CONFIG_TZ;
+set zdata time; set timefmt z "%Y-%m-%d"; set format z "%Y-%m-%d";
+
+set title sprintf("sensor=%d", ID);
+set grid x; set xrange ["00:10:00":"23:50:00"];
+#set yrange [60:100];
+set zrange ["2014-04-15":"2014-04-25"];
+set view 360,0;
+splot \
+	a = sma_24_init(250), \
+	DATAFILE u 2:(sma_24($3)):1 w l;
+
+#cat cache/49.csv |perl -MStatistics::Descriptive  -e 'while (<>){ m#\d{4}-\d{2}-\d{2}T(\d{2}):\d{2}:\d{2}JST,([0-9.]+)#; $A{$1}=Statistics::Descriptive::Sparse->new() unless (defined $A{$1}); $A{$1}->add_data($2);} print map {sprintf("%s,%0.3f,%0.3f,%d\n", $_, $A{$_}->mean(), 3.0 * $A{$_}->standard_deviation(),$A{$_}->count())} sort keys %A;'
+#reset; set datafile separator ","; set xrange [-0.5:24.5]; set xtics 0 6; set format x "%02.0f"; plot "49_daily.csv" u 1:2 w lines lw 3 title "daily average CPM (per hour)", "" u 1:2:3 w yerrorbars notitle
