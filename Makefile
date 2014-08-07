@@ -16,7 +16,7 @@ GNUPLOT_VARS := \
 .PHONY:		clean distclean mrproper all expire cache out daily publish view
 all:	out
 
-cache:	$(LIVE_SENSORS:%=cache/%.csv) cache/CPM2DRE.csv
+cache:	$(LIVE_SENSORS:%=cache/%.csv) cache/nGeigie_map.csv
 out:	$(LIVE_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png out/tilemap.png
 daily:	$(LIVE_SENSORS:%=daily/%.png)
 
@@ -36,11 +36,11 @@ cache/%.csv:	cacher.pl cache/.run | cache/
 	@echo "Fetching data to fill $@ ..."
 	@./cacher.pl $(basename $(notdir $@)) $(PLOT_SINCE) $(CONFIG_TIMEZONE) $(CONFIG_TZ)
 
-cache/CPM2DRE.csv:	cache/.run | cache/
+cache/nGeigie_map.csv:	cache/.run | cache/
 	@echo "Fetching for $@ ..."
-	@wget -q "https://www.google.com/fusiontables/exporttable?query=select+*+from+1nNOIamxzwwZGkwX8z9XYpgpTG4FwGSKaL02NcD7u" -O $@
+	@wget -q "https://www.google.com/fusiontables/exporttable?query=select+*+from+14rS7ksuRpjncURPzdrGJ2KDay0DpfyofKDCA7LYP" -O $@
 
-out/%.png:	cache/%.csv cache/CPM2DRE.csv timeplot.gpl $(CONFIG) | out/ tmp/
+out/%.png:	cache/%.csv cache/nGeigie_map.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "ID=$(basename $(notdir $@)); $(GNUPLOT_VARS)" ./timeplot.gpl
 	@head -n3 tmp/$(basename $(notdir $@)).data |tail -n1|perl -ne '/"(.*)"/; print "$$1\n"' >tmp/$(basename $(notdir $@)).title

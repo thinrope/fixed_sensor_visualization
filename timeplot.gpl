@@ -2,7 +2,7 @@
 reset;
 set encoding utf8;
 
-CPM2DRE=system("cat cache/CPM2DRE.csv|fgrep " . ID . " |cut -d, -f2");
+CPM2DRE=system("cat cache/nGeigie_map.csv|fgrep " . ID . " |cut -d, -f2");
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
 NOW_YEAR=system("TZ=" . CONFIG_TIMEZONE . " date +%Y");
 DATAFILE=sprintf("cache/%d.csv", ID);
@@ -28,8 +28,10 @@ set key autotitle columnheader top right;
 set grid xtics front;
 S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ . " --date='" . PERIOD_START . "'"));
 S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, NOW);
+
 set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 stats DATAFILE u (iso2s(1)):2 nooutput;
+three_sigma_percent=sprintf("±%0.1f%%",	100.0 * 3*STATS_stddev_y / STATS_mean_y);
 
 min_y = (1.1*STATS_min_y < STATS_mean_y - 4*STATS_stddev_y) ? 1.1*STATS_min_y : STATS_mean_y - 4*STATS_stddev_y; min_y = (min_y > 0) ? min_y : 0;
 max_y = (1.1*STATS_max_y > STATS_mean_y + 4*STATS_stddev_y) ? 1.1*STATS_max_y : STATS_mean_y + 4*STATS_stddev_y;
@@ -69,8 +71,8 @@ set style line 1 lc rgb "orange";
 plot \
 	DATAFILE u 1:2 w p ls 1 notitle, \
 	a = sma_24_init(STATS_mean_y), \
-	DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) axes x1y2 w l lw 2 palette title "2 h SMA (24-bin)", \
-	-100 w filledcurves fc rgb "cyan" fs transparent solid .1 title "±3{/Arial-Unicode-MS σ} area";
+	DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) axes x1y2 w l lw 2 palette title "24-bin SMA [= 2 h ]", \
+	-100 w filledcurves fc rgb "cyan" fs transparent solid .1 title "±3{/Arial-Unicode-MS σ} area [= " . three_sigma_percent . " ]";
 
 
 # small PNGs for Fusion tables
