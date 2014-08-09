@@ -18,7 +18,7 @@
 			<img style="vertical-align: middle;" src="ALL.png" alt="All live sensors" />
 		</div>
 		<div style="text-align:center;">
-			<a href="https://www.google.com/fusiontables/embedviz?q=select+col3+from+14rS7ksuRpjncURPzdrGJ2KDay0DpfyofKDCA7LYP&amp;viz=MAP&amp;h=false&amp;lat=36.883308376510676&amp;lng=140.59094633129885&amp;t=3&amp;z=8&amp;l=col3&amp;y=2&amp;tmplt=3&amp;hml=KML"><img style="vertical-align: middle;" src="nGeigie_map.png" alt="map" /></a>
+			<a href="https://www.google.com/fusiontables/embedviz?q=select+col3+from+14rS7ksuRpjncURPzdrGJ2KDay0DpfyofKDCA7LYP+where+col10+%3D+'fixed_sensor'&amp;viz=MAP&amp;h=false&amp;lat=36.883308376510676&amp;lng=140.59094633129885&amp;t=3&amp;z=8&amp;l=col3&amp;y=2&amp;tmplt=3&amp;hml=KML"><img style="vertical-align: middle;" src="nGeigie_map.png" alt="map" /></a>
 			<a href="http://safecast.org/tilemap/"><img style="margin-left:50px; vertical-align: middle;" src="tilemap.png" alt="tilemap" /></a>
 		</div>
 		<hr />

@@ -20,9 +20,9 @@ GNUPLOT_VARS := \
 .PHONY:		clean distclean mrproper all expire cache out daily publish view
 all:	out
 
-cache:	$(LIVE_SENSORS:%=cache/%.csv) cache/nGeigie_map.csv
-out:	$(LIVE_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png out/tilemap.png
-daily:	$(LIVE_SENSORS:%=daily/%.png)
+cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) cache/nGeigie_map.csv
+out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png out/tilemap.png
+daily:	$(TEST_SENSORS:%=daily/%.png)
 
 publish:	out
 	@$(PUBLISH_CMD)
