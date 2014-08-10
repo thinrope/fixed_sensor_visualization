@@ -1,4 +1,4 @@
-LIVE_SENSORS := 40 41 42 49 58 59 60
+LIVE_SENSORS := 40 41 42 49 58 59 60 62 71 54
 TEST_SENSORS := 77 80
 
 # syntax: option to `find` command
@@ -16,7 +16,7 @@ CONFIG_HEIGHT_SMALL := 200
 CONFIG_WIDTH_BIG := 500
 CONFIG_HEIGHT_BIG := 300
 
-CONFIG_WIDTH_ALL := 800
+CONFIG_WIDTH_ALL := 900
 CONFIG_HEIGHT_ALL := 400
 
 # long and short version of graph timezone (server local TZ does NOT matter)

@@ -3,8 +3,9 @@ reset;
 set encoding utf8;
 
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
-#set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box at graph 0.25, graph 0.97;
-set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box top center;
+#set key maxrows 4 width 1.0 height 0.8 spacing 0.8 box top center;
+set lmargin at screen 0.25;
+set key at screen 0.23, graph 1.0 Right opaque samplen 1.5 spacing 1.0 height 0.9 title "ID:  μSv/h   [CPM2DRE]  " noenhanced nobox maxcols 1;
 set grid x y2 front; 
 S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_START);
 S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_END);
