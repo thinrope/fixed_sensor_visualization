@@ -2,7 +2,7 @@
 reset;
 set encoding utf8;
 
-CPM2DRE=system("cat cache/nGeigie_map.csv|fgrep " . ID . " |cut -d, -f2");
+CPM2DRE=system("cat cache/nGeigie_map.csv|grep -P '^" . ID . ",' |cut -d, -f2");
 DATAFILE=sprintf("cache/%d.csv", ID);
 OUTFILE=sprintf("out/%d.png", ID);
 OUTFILE_small=sprintf("out/%d_small.png", ID);
