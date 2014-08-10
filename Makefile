@@ -21,7 +21,7 @@ GNUPLOT_VARS := \
 all:	out
 
 cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) cache/nGeigie_map.csv
-out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/index.html out/nGeigie_map.png out/tilemap.png
+out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/nGeigie_map.png out/tilemap.png
 daily:	$(TEST_SENSORS:%=daily/%.png)
 
 publish:	out
@@ -49,9 +49,13 @@ out/%.png:	cache/%.csv cache/nGeigie_map.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@gnuplot -e "ID=$(basename $(notdir $@)); $(GNUPLOT_VARS)" ./timeplot.gpl
 	@head -n3 tmp/$(basename $(notdir $@)).data |tail -n1|perl -ne '/"(.*)"/; print "$$1\n"' >tmp/$(basename $(notdir $@)).title
 
-out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl ${CONFIG} | out/ tmp/
+out/LIVE.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl ${CONFIG} | out/ tmp/
 	@echo "Plotting $@ ..."
-	@gnuplot -e "IDs='$(LIVE_SENSORS)'; $(GNUPLOT_VARS)" ./timeplot_all.gpl
+	@gnuplot -e "OUTFILE='$@'; IDs='$(LIVE_SENSORS)'; $(GNUPLOT_VARS)" ./timeplot_all.gpl
+
+out/TEST.png:	$(TEST_SENSORS:%=out/%.png) timeplot_all.gpl ${CONFIG} | out/ tmp/
+	@echo "Plotting $@ ..."
+	@gnuplot -e "OUTFILE='$@'; IDs='$(TEST_SENSORS)'; $(GNUPLOT_VARS)" ./timeplot_all.gpl
 
 out/nGeigie_map.png:	in/nGeigie_map.png ${CONFIG} | out/
 	@cp -a $< $@
@@ -59,7 +63,7 @@ out/nGeigie_map.png:	in/nGeigie_map.png ${CONFIG} | out/
 out/tilemap.png:	in/tilemap.png ${CONFIG} | out/
 	@cp -a $< $@
 
-out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/ALL.png ${CONFIG} | out/
+out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/LIVE.png ${CONFIG} | out/
 	@echo "Compiling $@ ..."
 	@{ \
 		cat in/index.header; \

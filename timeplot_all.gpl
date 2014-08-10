@@ -19,7 +19,7 @@ set xdata time; set timefmt '"%Y-%m-%dT%H:%M:%S' . CONFIG_TZ . '"'; set format x
 
 
 set term png enhanced font "Arial Unicode MS,10" size CONFIG_WIDTH_ALL, CONFIG_HEIGHT_ALL background "#ffffef";
-set output "out/ALL.png";
+set output OUTFILE;
 set title "Safecast fixed sensors: DRE at " . NOW;
 
 graph_title(n) = system("cat tmp/" . n . ".title");
