@@ -17,7 +17,7 @@ GNUPLOT_VARS := \
 
 .INTERMEDIATE:	cache/%.csv daily/%.csv
 .PRECIOUS:	cache/%.csv daily/%.csv
-.PHONY:		clean distclean mrproper all expire cache out daily publish view
+.PHONY:		clean distclean mrproper all expire cache out daily publish view printvars
 all:	out
 
 cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) cache/nGeigie_map.csv
@@ -96,3 +96,5 @@ mrproper:	distclean
 	@test ! -e $(CONFIG) || { rm -i $(CONFIG); exit 0; }
 	@echo -ne "mrproper:\tdone.\n"
 
+printvars:
+	@$(foreach V,$(sort $(.VARIABLES)), $(if $(filter-out environment% default automatic, $(origin $V)),$(info $V=$($V) )))
