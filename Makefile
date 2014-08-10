@@ -96,5 +96,8 @@ mrproper:	distclean
 	@test ! -e $(CONFIG) || { rm -i $(CONFIG); exit 0; }
 	@echo -ne "mrproper:\tdone.\n"
 
+get-%:
+	@$(info $($*))
+
 printvars:
 	@$(foreach V,$(sort $(.VARIABLES)), $(if $(filter-out environment% default automatic, $(origin $V)),$(info $V=$($V) )))
