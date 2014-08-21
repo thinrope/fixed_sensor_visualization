@@ -43,15 +43,11 @@ set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue"
 
 set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
 
-sma_24_init(x) = (k24=k23=k22=k21=k20=k19=k18=k17=k16=k15=k14=k13=k12=k11=k10=k9=k8=k7=k6=k5=k4=k3=k2=k1=x);
-sma_24_shift(x) = (k24=k23, k23=k22, k22=k21, k21=k20, k20=k19, k19=k18, k18=k17, k17=k16, K16=k15, K15=k14, k14=k13, k13=k12, k12=k11, k11=k10, k10=k9, k9=k8, k8=k7, k7=k6, k6=k5, k5=k4, k4=k3, k3=k2, k2=k1, k1 = x);
-sma_24_RO(x) = (k24+k23+k22+k21+k20+k19+k18+k17+k16+k15+k14+k13+k12+k11+k10+k9+k8+k7+k6+k5+k4+k3+k2+k1)/24;
+sma_24_init(x) = (w24=w23=w22=w21=w20=w19=w18=w17=w16=w15=w14=w13=w12=w11=w10=w9=w8=w7=w6=w5=w4=w3=w2=w1=x);
+sma_24_shift(x) = (w24=w23,w23=w22,w22=w21,w21=w20,w20=w19,w19=w18,w18=w17,w17=w16,w16=w15,w15=w14,w14=w13,w13=w12,w12=w11,w11=w10,w10=w9,w9=w8,w8=w7,w7=w6,w6=w5,w5=w4,w4=w3,w3=w2,w2=w1,w1=x);
+sma_24_samples(x) = $0 > 23 ? 24 : ($0+1);
+sma_24_RO(x) = (w24+w23+w22+w21+w20+w19+w18+w17+w16+w15+w14+w13+w12+w11+w10+w9+w8+w7+w6+w5+w4+w3+w2+w1)/sma_24_samples($0);
 sma_24(x) = (sma_24_shift(x), sma_24_RO(x));
-
-#set ytics add ("mean" STATS_mean_y);
-#set y2tics add ("mean" STATS_mean_y * CPM2DRE);
-#set ytics add ("+3σ    " STATS_mean_y + 3*STATS_stddev_y);
-#set ytics add ("-3σ    " STATS_mean_y - 3*STATS_stddev_y);
 
 # Large PNGs for gamma.tar.bz
 FONT="Arial Unicode MS";
@@ -70,8 +66,7 @@ set label 15 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0
 set style line 1 lc rgb "orange";
 plot \
 	DATAFILE u 1:2 w p ls 1 notitle, \
-	a = sma_24_init(STATS_mean_y), \
-	DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) axes x1y2 w l lw 2 palette title "24-bin SMA [= 2 h ]", \
+	w = sma_24_init(0) DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) axes x1y2 w l lw 2 palette title "24-bin SMA [= 2 h ]", \
 	-100 w filledcurves fc rgb "cyan" fs transparent solid .1 title "±3{/Arial-Unicode-MS σ} area [= " . three_sigma_percent . " ]";
 
 
@@ -89,11 +84,11 @@ set grid x y;
 set format x "%m/%d"; set xtics offset 0, graph 0.03; set label 32 END_YEAR at graph 0.5, graph -0.17 center;
 
 plot \
-	a = sma_24_init(STATS_mean_y), \
-	DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) w l lw 1 palette notitle;
+	w = sma_24_init(0) DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) w l lw 1 palette notitle;
 
 # save data for ALL.png
 set format x "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format y "%0.3f";
 set table TABLE;
-plot a = sma_24_init(STATS_mean_y*CPM2DRE), DATAFILE u 1:(sma_24($2*CPM2DRE)) title sprintf("%d: %s [%.3E]", ID, uSv_h, CPM2DRE);
+# FIXME: WTF can't we print SMA24?
+plot DATAFILE u 1:($2*CPM2DRE) title sprintf("%d: %s [%.3E]", ID, uSv_h, CPM2DRE);
 unset table;
