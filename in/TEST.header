@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="/inc/main.css" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Safecast fixed radiation sensors [TESTING]</title>
+		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="/inc/main.css" />
+
+	</head>
+	<body style="background-color: #663333">
+		<h1>Safecast fixed radiation sensors [TESTING]</h1>
+		<h2>NB: The data shown on this page is probably way wrong!</h2>
+		<div style="text-align:center;">
+			<img style="vertical-align: middle;" src="TEST.png" alt="All TESTING sensors" />
+		</div>
+		<hr />
+		<div style="text-align:center;">
