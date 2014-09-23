@@ -16,10 +16,7 @@ ID,CPM2DRE,DRE2CPM,type,Label,QTH_country,QTH_rest,sensor_model,sensor_type,loc,
 80,0.0032258064,310,TEST_sensor,ID: 80,UNKNOWN,somewhere on Earth,SI-180G,GM_tube,34.56 140.80,2014,2014-08-08,large_blue,,http://gamma.tar.bz/nGeigies/80_small.png,sensor data,320,200,
 83,0.008333334,120,TEST_sensor,ID: 83,UNKNOWN,somewhere on Earth,LND-712,GM_tube,34.56 140.83,2014,2014-08-27,large_blue,,http://gamma.tar.bz/nGeigies/83_small.png,sensor data,320,200,
 84,0.008333334,120,TEST_sensor,ID: 84,UNKNOWN,somewhere on Earth,LND-712,GM_tube,34.56 140.84,2014,2014-08-27,large_blue,,http://gamma.tar.bz/nGeigies/84_small.png,sensor data,320,200,
-75,0.002994012,334,fixed_sensor,ID: 75,Japan,"Fukushima-ken, Hirono-cho",LND 7313,GM_tube,"37.217297	140.997633
-",2014,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/75_small.png,sensor data,320,200,
-79,0.002994012,334,fixed_sensor,ID: 79,USA,"HI, Haiku",LND 7313,GM_tube,"20.9109 -156.2887
-",2014,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/79_small.png,sensor data,320,200,IMI Hawk Radius Probe #1059
+75,0.002994012,334,fixed_sensor,ID: 75,Japan,"Fukushima-ken, Hirono-cho",LND 7313,GM_tube,37.217297 140.997633,2014,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/75_small.png,sensor data,320,200,
+79,0.002994012,334,fixed_sensor,ID: 79,USA,"HI, Haiku",LND 7313,GM_tube,20.9109 -156.2887,2014,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/79_small.png,sensor data,320,200,IMI Hawk Radius Probe #1059
 72,0.002994012,334,fixed_sensor,ID: 72,USA,"WA, Seattle",LND 7313,GM_tube,47.612268 -122.345039,2014,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/72_small.png,sensor data,320,200,
-61,0.002994012,334,fixed_sensor,ID: 61,USA,"CA, Los Angeles, Griffith Park",LND 7313,GM_tube,"38.4037 -122.818386
-",2014,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/61_small.png,sensor data,320,200,
+61,0.002994012,334,fixed_sensor,ID: 61,USA,"CA, Los Angeles, Griffith Park",LND 7313,GM_tube,38.4037 -122.818386,2014,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/61_small.png,sensor data,320,200,
