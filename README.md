@@ -21,6 +21,8 @@ The following is my development environment, so it is (kind of) guaranteed to wo
 	* [DateTime::Format::ISO8601](http://search.cpan.org/~jhoblitt/DateTime-Format-ISO8601-0.08/) {>=0.0.8}
 
 # Usage
+Make sure you have EDITOR envvar defined (or simply edit Makefile.config with your favorite text editor)
+
 ```bash
 cp -a Makefile.config{.EXAMPLE,} && ${EDITOR} Makefile.config
 make view
@@ -34,11 +36,11 @@ make publish
 * Four sub-directories are used/created:
   * *in*: some static input data (HTML templates, etc.), updated from the repo when you do **git pull**, etc.
   * *cache*: dynamic data (each sensor readings, metadata, etc.), downloaded/refreshed and further processed (via *make* -> *cacher.pl* invocation)
-  * *tmp*: temporary data (averaged readings, plot titles, etc.), produced via  *make* -> *gnuplot* -> *timeplot_all.gpl*
+  * *tmp*: temporary data (averaged readings, plot titles, etc.), produced via *make* -> *gnuplot* -> *timeplot_all.gpl*
   * *out*: final local mirror of what gets published to the server
 
 * The usual **make publish** workflow is as follows (see inside *Makefile* for other targets/details):
-  * invoke **gnuplot**/*timeplot.gpl* and produce each individual sensor graphs (e.g. *out/40.png* and *out/40_small.png*) as well as data for all-sensor-graphs (inside *tmp*)
-  * invoke **gnuplot**/*timeplot_all* and produce all-sensor-graphs (*out/LIVE.png* and *out/TEST.png*)
+  * invoke **gnuplot** to execute *timeplot.gpl* and produce each individual sensor graphs (e.g. *out/40.png* and *out/40_small.png*) as well as data for all-sensor-graphs (inside *tmp*)
+  * invoke **gnuplot** to execute *timeplot_all* and produce all-sensor-graphs (*out/LIVE.png* and *out/TEST.png*)
   * parse HTML templates to produce the final output *out/index.html* and *out/TEST.html*
   * publish the results on a server (see PUBLISH_CMD inside *Makefile.conf*)
