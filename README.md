@@ -9,7 +9,7 @@ A slightly modified version of this code is making the graphs on http://realtime
 
 # Description
 
-A collection of scripts and settings to visualize data from fixed sensors. Initial scope is limitted to Safecast nGegie sensors - fixed radiation sensors.
+A collection of scripts and settings to visualize data from fixed sensors. Initial scope is limited to Safecast nGegie sensors - fixed radiation sensors.
 
 # Prerequisites
 
@@ -26,3 +26,19 @@ cp -a Makefile.config{.EXAMPLE,} && ${EDITOR} Makefile.config
 make view
 make publish
 ```
+
+# Architecture
+
+* Local configuration (API endpoint, sensor IDs to plot, graphs color&size, etc.) is stored in *Makefile.config*, edit to suit your needs.
+
+* Four sub-directories are used/created:
+  * *in*: some static input data (HTML templates, etc.), updated from the repo when you do **git pull**, etc.
+  * *cache*: dynamic data (each sensor readings, metadata, etc.), downloaded/refreshed and further processed (via *make* -> *cacher.pl* invocation)
+  * *tmp*: temporary data (averaged readings, plot titles, etc.), produced via  *make* -> *gnuplot* -> *timeplot_all.gpl*
+  * *out*: final local mirror of what gets published to the server
+
+* The usual **make publish** workflow is as follows (see inside *Makefile* for other targets/details):
+  * invoke **gnuplot**/*timeplot.gpl* and produce each individual sensor graphs (e.g. *out/40.png* and *out/40_small.png*) as well as data for all-sensor-graphs (inside *tmp*)
+  * invoke **gnuplot**/*timeplot_all* and produce all-sensor-graphs (*out/LIVE.png* and *out/TEST.png*)
+  * parse HTML templates to produce the final output *out/index.html* and *out/TEST.html*
+  * publish the results on a server (see PUBLISH_CMD inside *Makefile.conf*)
