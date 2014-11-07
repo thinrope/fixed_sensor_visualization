@@ -1,5 +1,10 @@
-LIVE_SENSORS := 40 41 42 49 58 59 60 62 71 54
-TEST_SENSORS := 77 80
+LIVE_SENSORS := 40 41 42 49 58 59 60 71 61 72 75 79
+TEST_SENSORS := 77 80 83 84 90 78
+DEAD_SENSORS := 54 62
+
+# SMA smoothing related
+CONFIG_SMA1 := 24
+CONFIG_SMA2 := 12
 
 # syntax: option to `find` command
 MAX_AGE_TO_CACHE := -mmin +30

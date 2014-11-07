@@ -39,7 +39,7 @@ cache/.run:	cache/
 
 cache/%.csv:	cacher.pl cache/.run ${CONFIG} | cache/
 	@echo "Fetching data to fill $@ ..."
-	@./cacher.pl $(basename $(notdir $@)) $(PLOT_FROM) $(PLOT_TO) $(CONFIG_TIMEZONE) $(CONFIG_TZ)
+	@./cacher.pl $(basename $(notdir $@)) $(PLOT_FROM) $(PLOT_TO) $(CONFIG_TIMEZONE) $(CONFIG_TZ) $(CONFIG_SMA1) $(CONFIG_SMA2)
 
 cache/nGeigie_map.csv:	cache/.run ${CONFIG} | cache/
 	@echo "Fetching for $@ ..."
