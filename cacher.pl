@@ -22,12 +22,14 @@ my $server_TZ='UTC';
 
 my $since_query = qx!TZ=${server_TZ} date +since=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_since}'!; chomp $since_query;
 my $until_query = qx!TZ=${server_TZ} date +until=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_until}'!; chomp $until_query;
-qx!wget -q 'https://api.safecast.org/en-US/devices/$id/measurements.csv?${since_query}&${until_query}&order=captured_at+asc' -O cache/$id.tmp!;
+my $cmd = "wget -q 'https://api.safecast.org/en-US/devices/$id/measurements.csv?${since_query}&${until_query}&order=captured_at+asc' -O cache/$id.tmp";
+#print STDERR "$cmd\n";
+qx!$cmd!;
 
 open(IN, "<cache/$id.tmp")
-	or die;
+	or die("$! , exitting");
 open(OUT, ">cache/$id.csv")
-	or die;
+	or die("$! , exitting");
 
 my @sma_bins = ();
 while(<IN>)
@@ -41,14 +43,14 @@ while(<IN>)
 		#print STDERR  join(":", $#sma_bins-11, $#sma_bins), "\t", join("\t", @sma_bins), "\n";
 		my $sma1 = (eval join('+', @sma_bins)) / scalar(@sma_bins);		# eval buffer
 		my $sma2 = $sma1;							# place for smaller buffer
-		if (scalar(@sma_bins) > $SMA_BINS2)						# if buffer is larger than smaller size
+		if (scalar(@sma_bins) > $SMA_BINS2)					# 
 		{
-			$sma2 = (eval join('+', @sma_bins[$#sma_bins-$SMA_BINS2 + 1 .. $#sma_bins])) / $SMA_BINS2;	# use only last 12 bins, NOTE: index OB1
+			$sma2 = (eval join('+', @sma_bins[$#sma_bins-$SMA_BINS2 + 1 .. $#sma_bins])) / $SMA_BINS2;	# use only last $SMA_BINS2 bins, NOTE: OB1
 		}
 		print OUT join(',', $R[0], $R[3], sprintf("%0.3f,%0.3f\n", $sma1, $sma2));
 	}
 }
 close(OUT)
-	or die;
+	or die("$!, exitting");
 close(IN)
-	or die;
+	or die("$! ,exitting");
