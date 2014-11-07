@@ -14,7 +14,7 @@ usage()
 	echo -ne "USAGE:\n";
 	echo -ne "\t${0} [number_of_bins] [multiline?]\n"
 	echo -ne "Example:\n"
-	echo -ne "\t${0} 6 \"\\n\"\t\t<-- for multiline\n"
+	echo -ne "\t${0} 6 \"\\"; echo -ne "n\"\t\t<-- for multiline\n"
 	echo -ne "\t${0} 6     \t\t<-- for single long line\n"
 	exit
 }
