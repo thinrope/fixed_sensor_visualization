@@ -64,7 +64,8 @@ plot \
 	DATAFILE u 1:2 w p ls 1 notitle, \
 	DATAFILE u 1:($3*CPM2DRE):($3*CPM2DRE) axes x1y2 w l lw 2 palette title "24-bin SMA [= 2 h ]", \
 	-100 w filledcurves fc rgb "cyan" fs transparent solid 0.2 title "±3{/Arial-Unicode-MS σ} area [= " . three_sigma_percent . " ]", \
-	"< cat " . DATAFILE . " |./blank_detector.pl" u 1:(0):1:2:(STATS_mean_y - 3*STATS_stddev_y):(STATS_mean_y + 3*STATS_stddev_y) w boxxy fc rgb "black" fs solid 0.9 noborder title "NO DATA, > 2 h";
+	"< cat " . DATAFILE . " |./blank_detector.pl 1800" u 1:(0):1:2:(STATS_mean_y - 3*STATS_stddev_y):(STATS_mean_y + 3*STATS_stddev_y) w boxxy fc rgb "black" fs solid 0.3 noborder title "NO DATA, >0.5h", \
+	"< cat " . DATAFILE . " |./blank_detector.pl 7200" u 1:(0):1:2:(STATS_mean_y - 3*STATS_stddev_y):(STATS_mean_y + 3*STATS_stddev_y) w boxxy fc rgb "black" fs solid 0.9 noborder title "NO DATA, > 2 h";
 
 
 # small PNGs for Fusion tables
