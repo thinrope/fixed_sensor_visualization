@@ -40,6 +40,7 @@ open(OUT, ">cache/$id.csv")
 
 my @sma_bins = ();
 my $t_prev = -1;
+my $dt_prev = 36000;	# NOTE: Big number initially, 10h
 while(<IN>)
 {
 	my @R = split(/,/, $_, 5);
@@ -63,6 +64,11 @@ while(<IN>)
 		{
 			$sma2 = (eval join('+', @sma_bins[$#sma_bins-$SMA_BINS2 + 1 .. $#sma_bins])) / $SMA_BINS2;	# use only last $SMA_BINS2 bins, NOTE: OB1
 		}
+
+		print OUT "\n"				# print blank line, if there was missing data (for gnuplot)
+			if ($dt > 5.0 * $dt_prev);
+		$dt_prev = $dt;
+
 		print OUT join(',', "${timestamp}${TZ}", $R[3], sprintf("%0.3f,%0.3f,%d\n", $sma1, $sma2, $dt));
 	}
 }
