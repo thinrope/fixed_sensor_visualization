@@ -43,6 +43,7 @@ set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rg
 set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue";
 
 set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
+set format y "% 0.0f"; set format y2 "%0.2f";
 
 # Large PNGs for gamma.tar.bz
 FONT="Arial Unicode MS";
