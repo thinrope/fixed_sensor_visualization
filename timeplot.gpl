@@ -59,7 +59,7 @@ set label 3 sprintf("&{%0.2f±%0.2f μSv/h }(&{%0.1f±%0.1f CPM}), total %d meas
 #set label 13 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0215, graph 0.940 font FONT . ",15" textcolor rgb "black";
 set label 14 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0235, graph 0.930 font FONT . ",15" textcolor rgb "dark-gray";
 set label 15 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0240, graph 0.925 font FONT . ",15" textcolor rgb "#FF0066";
-set label 16 LABEL at graph 0.0240, graph 0.86 font FONT . ",9" textcolor rgb "#FF0066";
+set label 16 LABEL at graph 0.0240, graph 0.85 font FONT . ",9" textcolor rgb "#FF0066";
 set style line 1 lc rgb "orange";
 plot \
 	DATAFILE u 1:2 w p ls 1 notitle, \
