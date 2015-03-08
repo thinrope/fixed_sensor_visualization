@@ -2,7 +2,9 @@
 reset;
 set encoding utf8;
 
-CPM2DRE=1.0/334.0;
+#temp fix for LND712 and LND7801 tubes
+if (ID==54 || ID==92 || ID==95 || ID==106) CPM2DRE=1.0/120.0; else if (ID==78) CPM2DRE=1.0/960.0; else CPM2DRE=1.0/334.0;
+
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
 DATAFILE=sprintf("cache/%d.csv", ID);
 OUTFILE=sprintf("out/%d.png", ID);
@@ -14,13 +16,13 @@ iso2s(COL) = strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, strcol(COL));
 s2iso(seconds) = strftime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, seconds);
 
 set datafile separator ",";
-
 # set palette
 set cbtics (0.03, 0.14, 0.43, 1.65, 65.54);
 set palette model RGB;
 set palette file "cyanhalo_lut_4xlog10.csv" u 1:2:3;
 set cbrange [0.03: 65.54];
 unset colorbox;
+
 
 
 set key autotitle columnheader top right;
@@ -34,8 +36,8 @@ min_y = (1.1*STATS_min_y < STATS_mean_y - 4*STATS_stddev_y) ? 1.1*STATS_min_y : 
 max_y = (1.1*STATS_max_y > STATS_mean_y + 4*STATS_stddev_y) ? 1.1*STATS_max_y : STATS_mean_y + 4*STATS_stddev_y;
 #min_y = 0; max_y = 350;
 set yrange [min_y: max_y]; set ylabel "CPM";
-set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "blue"; set y2label "μSv/h" textcolor rgb "blue";
-set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue";
+set y2range [min_y * CPM2DRE: max_y * CPM2DRE]; set y2tics nomirror textcolor rgb "grey"; set y2label "μSv/h" textcolor rgb "grey";
+set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "grey";
 
 set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
 
@@ -49,18 +51,19 @@ sma_24(x) = (sma_24_shift(x), sma_24_RO(x));
 #set ytics add ("+3σ    " STATS_mean_y + 3*STATS_stddev_y);
 #set ytics add ("-3σ    " STATS_mean_y - 3*STATS_stddev_y);
 
-set object 1 rectangle from "2013-01-01", STATS_mean_y - 3*STATS_stddev_y to "2015-01-01", STATS_mean_y + 3*STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.1 border lc rgb "cyan";
+set object 1 rectangle from "2014-01-01", STATS_mean_y - 3*STATS_stddev_y to "2016-01-01", STATS_mean_y + 3*STATS_stddev_y back fc rgb "grey" fillstyle solid 0.1 border lc rgb "grey";
 set title sprintf("sensor=%d, total %d records, %0.1f±%0.1f CPM (%0.2f±%0.2f μSv/h)", ID, STATS_records, STATS_mean_y, 3*STATS_stddev_y, STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
 
-set term png enhanced font "Arial Unicode MS,8" size CONFIG_WIDTH_BIG, CONFIG_HEIGHT_BIG background "#ffffef";
+set term png enhanced font "Arial,8" size CONFIG_WIDTH_BIG, CONFIG_HEIGHT_BIG background "#ffffff";
 set output OUTFILE;
 
+set datafile missing "";
 set style line 1 lc rgb "orange";
 plot \
 	DATAFILE u 1:2 w p ls 1 notitle, \
 	a = sma_24_init(STATS_mean_y), \
-	DATAFILE u 1:(sma_24($2)) w l lw 2 title "CPM, 24-bin SMA", \
-	-100 w filledcurves fc rgb "cyan" fs transparent solid .1 title "±3σ area";
+	DATAFILE u 1:(sma_24($2))  w points lt 3 pt 13 ps 0.6   title "CPM, 24-bin SMA" , \
+	-100 w filledcurves fc rgb "grey" fs transparent solid .1 title "±3σ area";
 
 
 # plot small PNG for Fusion tables
@@ -77,7 +80,8 @@ set format x "%Y-%m-%d";
 
 plot \
 	a = sma_24_init(STATS_mean_y), \
-	DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) w l lw 1 palette notitle;
+	DATAFILE u 1:(sma_24($2)*CPM2DRE):(sma_24_RO($2)*CPM2DRE) with points lt 3 pt 13 ps 0.6 lc palette notitle;
+
 
 
 # save data for ALL.png
@@ -85,3 +89,4 @@ set format x "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ;
 set table TABLE;
 plot a = sma_24_init(STATS_mean_y), DATAFILE u 1:(sma_24($2)) title sprintf("%d: %s", ID, uSv_h);
 unset table;
+

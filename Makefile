@@ -37,12 +37,12 @@ cache/%.csv:	cacher.pl cache/.run | cache/
 
 out/%.png:	cache/%.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
-	@gnuplot -e "ID=$(basename $(notdir $@)); $(GNUPLOT_VARS)" ./timeplot.gpl
+	-@gnuplot -e "ID=$(basename $(notdir $@)); $(GNUPLOT_VARS)" ./timeplot.gpl
 	@head -n3 tmp/$(basename $(notdir $@)).data |tail -n1|perl -ne '/"(.*)"/; print "$$1\n"' >tmp/$(basename $(notdir $@)).title
 
 out/ALL.png:	$(LIVE_SENSORS:%=out/%.png) timeplot_all.gpl | out/ tmp/
 	@echo "Plotting $@ ..."
-	@gnuplot -e "IDs='$(LIVE_SENSORS)'; $(GNUPLOT_VARS)" ./timeplot_all.gpl
+	-@gnuplot -e "IDs='$(LIVE_SENSORS)'; $(GNUPLOT_VARS)" ./timeplot_all.gpl
 
 out/nGeigie_map.png:	in/nGeigie_map.png | out/
 	@cp -a $< $@
