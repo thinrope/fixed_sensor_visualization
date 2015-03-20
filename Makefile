@@ -31,8 +31,13 @@ cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) cache/nGeigie
 out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/TEST.html out/nGeigie_map.png out/tilemap.png
 daily:	$(TEST_SENSORS:%=daily/%.png)
 
-publish:	out
+publish:	crush
 	@$(PUBLISH_CMD)
+
+crush:	out
+	@echo "Crushing PNGs..."
+	@pngcrush -q -oldtimestamp -ow out/*png
+	@echo "done."
 
 view:	out
 	@$(VIEW_CMD)
@@ -100,7 +105,7 @@ test:
 	@echo "Current version: $(VERSION)$(SOURCE_STATUS)"
 
 clean:
-	@rm -rf cache/* tmp/* daily/*
+	@rm -rf cache/* tmp/* daily/* crushed/
 	@echo -ne "clean:\tdone.\n"
 
 distclean:	clean
