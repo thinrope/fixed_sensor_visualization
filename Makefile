@@ -16,6 +16,8 @@ SYNC_CMD := wget -q 'https://www.google.com/fusiontables/exporttable?query=selec
 SYNC := $(shell [[ ! -e cache/nGeigie_map.csv || -n `find cache/nGeigie_map.csv $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD) 2>/dev/null )
 LIVE_SENSORS := $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep fixed_sensor|cut -d, -f1|sort -n|xargs echo)
 TEST_SENSORS := $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep TEST_sensor|cut -d, -f1|sort -n|xargs echo)
+REGISTERED_SENSORS := $(shell cat cache/devices.json | perl -ne 'print "$$1 " while (/\"id":"(\d+)"/g)')
+DEAD_SENSORS := $(shell for s in $(REGISTERED_SENSORS); do echo $(LIVE_SENSORS) $(TEST_SENSORS)|grep -q $$s || echo $$s; done |xargs echo)
 
 GNUPLOT_VARS := \
 	CONFIG_WIDTH_SMALL=$(CONFIG_WIDTH_SMALL); CONFIG_WIDTH_BIG=$(CONFIG_WIDTH_BIG); CONFIG_WIDTH_ALL=$(CONFIG_WIDTH_ALL); \
@@ -27,14 +29,20 @@ GNUPLOT_VARS := \
 .PHONY:		clean distclean mrproper all expire cache out daily publish view printvars
 all:	out
 
-cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) cache/nGeigie_map.csv
+cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) cache/nGeigie_map.csv cache/devices.json
 out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/TEST.html out/nGeigie_map.png out/tilemap.png
 daily:	$(TEST_SENSORS:%=daily/%.png)
+
 
 publish:	crush
 	@$(PUBLISH_CMD)
 
-crush:	out
+nodata:	out/
+	# FIXME: This is a HACK and will break!
+	@echo "Hack around sensors with no data ($(DEAD_SENSORS))..."
+	$(shell for s in $(DEAD_SENSORS); do gnuplot -e "ID=$$s; $(GNUPLOT_VARS)" ./nodata.gpl; done )
+
+crush:	out nodata
 	@echo "Crushing PNGs..."
 	@pngcrush -q -oldtimestamp -ow out/*png
 	@echo "done."
@@ -55,6 +63,10 @@ cache/%.csv:	cacher.pl cache/.run ${CONFIG} | cache/
 cache/nGeigie_map.csv:	cache/.run ${CONFIG} | cache/
 	@echo "Fetching for $@ ..."
 	@$(SYNC_CMD)
+
+cache/devices.json:	cache/.run ${CONFIG} | cache/
+	@echo "Fetching for $@ ..."
+	@$(shell /usr/bin/wget -q http://realtime.safecast.org/wp-content/uploads/devices.json -O $@)
 
 out/%.png:	cache/%.csv cache/nGeigie_map.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
@@ -103,6 +115,11 @@ daily/%.png:	daily/%.csv $(CONFIG) timeplot_daily.gpl | daily/
 test:
 	@echo "It is $(NOW) in $(CONFIG_TIMEZONE)."
 	@echo "Current version: $(VERSION)$(SOURCE_STATUS)"
+	@echo -e "LIVE: $(LIVE_SENSORS)"
+	@echo -e "TEST: $(TEST_SENSORS)"
+	@echo -e "REGISTERED: $(REGISTERED_SENSORS)" 
+	@echo -e "DEAD_SENSORS: $(DEAD_SENSORS)  <-- hack"
+	@echo "$(GNUPLOT_VARS)"
 
 clean:
 	@rm -rf cache/* tmp/* daily/* crushed/

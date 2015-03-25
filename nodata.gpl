@@ -1,0 +1,45 @@
+#!/usr/bin/gnuplot
+reset;
+set encoding utf8;
+
+OUTFILE_small=sprintf("out/%d_small.png", ID);
+
+set key autotitle columnheader top right;
+set grid xtics front;
+S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_START);
+S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_END);
+END_YEAR=system("TZ=" . CONFIG_TIMEZONE . " date +%Y --date='" . PERIOD_END . "'");
+set xdata time;
+set xrange [ S_START : S_END ]; # set xlabel "timestamp";
+
+# small PNGs for Fusion tables
+FONT="Futura Std Medium";
+set term png enhanced notransparent nointerlace truecolor butt font FONT . ",7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
+set output OUTFILE_small;
+
+unset title; unset ytics; unset y2tics;
+set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.1f";
+set grid x y;
+set format x "%m/%d";
+set xtics offset 0, graph 0.03; set label 32 END_YEAR at graph 0.5, graph -0.17 center;
+
+plot -1 w l notitle;
+unset title; unset for [i in "31 32"] label i;
+
+
+# small PNGs for Fusion tables @2x res
+FONT="Futura ND";
+WIDTH=CONFIG_WIDTH_SMALL * 2; HEIGHT = CONFIG_HEIGHT_SMALL * 2;
+set term pngcairo enhanced color solid notransparent background "#ffffff" font FONT . ",14" linewidth 2 butt size WIDTH, HEIGHT;
+set output sprintf("out/%d_%dx%d.png", ID, WIDTH, HEIGHT);
+
+unset title;
+set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.1f";
+set grid x y;
+#set format x "%m/%d"; set xtics offset 0, graph 0.03; set xlabel END_YEAR offset 0,1;
+set label 40 sprintf("%d", ID) at graph 0.5, graph 0.75 center font FONT . ",120" back textcolor rgb "#dddddd";
+set label 41 "[no data]" at graph 0.5, graph 0.25 center font FONT . ",80" back textcolor rgb "#ee3333";
+plot -1 w l notitle;
+
+unset title; unset for [i in "31 32 40 41"] label i;
+
