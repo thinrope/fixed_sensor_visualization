@@ -12,8 +12,10 @@ VERSION := $(shell git log -n 1 --pretty=format:"%h" 2>/dev/null)
 SOURCE_STATUS := $(shell git_status=$$(git status --porcelain); if test -n "$${git_status}"; then echo " +α"; fi)
 EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && touch cache/.run 2>/dev/null )
 
-SYNC_CMD := wget -q 'https://www.google.com/fusiontables/exporttable?query=select+*+from+14rS7ksuRpjncURPzdrGJ2KDay0DpfyofKDCA7LYP' -O cache/nGeigie_map.csv
-SYNC := $(shell [[ ! -e cache/nGeigie_map.csv || -n `find cache/nGeigie_map.csv $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD) 2>/dev/null )
+SYNC_CMD1 := wget -q 'https://www.google.com/fusiontables/exporttable?query=select+*+from+14rS7ksuRpjncURPzdrGJ2KDay0DpfyofKDCA7LYP' -O cache/nGeigie_map.csv
+SYNC1 := $(shell [[ ! -e cache/nGeigie_map.csv || -n `find cache/nGeigie_map.csv $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD1) 2>/dev/null )
+SYNC_CMD2 := wget -q 'http://realtime.safecast.org/wp-content/uploads/devices.json' -O cache/devices.json
+SYNC2 := $(shell [[ ! -e cache/devices.json || -n `find cache/devices.json $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD2) 2>/dev/null )
 LIVE_SENSORS := $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep fixed_sensor|cut -d, -f1|sort -n|xargs echo)
 TEST_SENSORS := $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep TEST_sensor|cut -d, -f1|sort -n|xargs echo)
 REGISTERED_SENSORS := $(shell cat cache/devices.json | perl -ne 'print "$$1 " while (/\"id":"(\d+)"/g)')
@@ -27,7 +29,7 @@ GNUPLOT_VARS := \
 .INTERMEDIATE:	cache/%.csv daily/%.csv
 .PRECIOUS:	cache/%.csv daily/%.csv
 .PHONY:		clean distclean mrproper all expire cache out daily publish view printvars
-all:	out
+all:	out nodata
 
 cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) cache/nGeigie_map.csv cache/devices.json
 out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/TEST.html out/nGeigie_map.png out/tilemap.png
@@ -62,11 +64,11 @@ cache/%.csv:	cacher.pl cache/.run ${CONFIG} | cache/
 
 cache/nGeigie_map.csv:	cache/.run ${CONFIG} | cache/
 	@echo "Fetching for $@ ..."
-	@$(SYNC_CMD)
+	@$(SYNC_CMD1)
 
 cache/devices.json:	cache/.run ${CONFIG} | cache/
 	@echo "Fetching for $@ ..."
-	@$(shell /usr/bin/wget -q http://realtime.safecast.org/wp-content/uploads/devices.json -O $@)
+	@$(SYNC_CMD2)
 
 out/%.png:	cache/%.csv cache/nGeigie_map.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
@@ -117,7 +119,7 @@ test:
 	@echo "Current version: $(VERSION)$(SOURCE_STATUS)"
 	@echo -e "LIVE: $(LIVE_SENSORS)"
 	@echo -e "TEST: $(TEST_SENSORS)"
-	@echo -e "REGISTERED: $(REGISTERED_SENSORS)" 
+	@echo -e "REGISTERED: $(REGISTERED_SENSORS)"
 	@echo -e "DEAD_SENSORS: $(DEAD_SENSORS)  <-- hack"
 	@echo "$(GNUPLOT_VARS)"
 
