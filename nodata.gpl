@@ -36,10 +36,8 @@ set output sprintf("out/%d_%dx%d.png", ID, WIDTH, HEIGHT);
 unset title;
 set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.1f";
 set grid x y;
-#set format x "%m/%d"; set xtics offset 0, graph 0.03; set xlabel END_YEAR offset 0,1;
 set label 40 sprintf("%d", ID) at graph 0.5, graph 0.75 center font FONT . ",120" back textcolor rgb "#dddddd";
-set label 41 "[no data]" at graph 0.5, graph 0.25 center font FONT . ",80" back textcolor rgb "#ee3333";
 plot -1 w l notitle;
 
-unset title; unset for [i in "31 32 40 41"] label i;
+unset title; unset for [i in "31 32 40"] label i;
 
