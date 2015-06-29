@@ -3,7 +3,7 @@ reset;
 set encoding utf8;
 
 #temp fix for LND712 and LND7801 tubes
-if (ID==54 || ID==92 || ID==95 || ID==106) CPM2DRE=1.0/120.0; else if (ID==78) CPM2DRE=1.0/960.0; else CPM2DRE=1.0/334.0;
+if (ID==100012|| ID==54 || ID==92 || ID==95 || ID==106 || ID==126) CPM2DRE=1.0/120.0; else if (ID==78) CPM2DRE=1.0/960.0; else CPM2DRE=1.0/334.0;
 
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
 DATAFILE=sprintf("cache/%d.csv", ID);
