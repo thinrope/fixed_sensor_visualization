@@ -23,4 +23,4 @@ set output OUTFILE;
 set title "Safecast fixed sensors: DRE at " . NOW font "Arial Unicode MS,12";
 
 graph_title(n) = system("cat tmp/" . n . ".title");
-plot for [ID in IDs] "tmp/" . ID . ".data" u 1:2 axes x1y2 w l lw 2 title graph_title(ID);
+plot for [ID in IDs] "tmp/" . ID . ".data" u 1:2 axes x1y2 w l lw 1 title graph_title(ID);
