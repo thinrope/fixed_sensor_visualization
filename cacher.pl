@@ -22,7 +22,7 @@ my $server_TZ='UTC';
 
 my $since_query = qx!TZ=${server_TZ} date +since=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_since}'!; chomp $since_query;
 my $until_query = qx!TZ=${server_TZ} date +until=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_until}'!; chomp $until_query;
-my $URL = "https://api.safecast.org/en-US/devices/$id/measurements.csv?${since_query}&${until_query}&order=captured_at+asc";
+my $URL = "https://api.safecast.org/en-US/devices/$id/measurements.csv?${since_query}&${until_query}&unit=cpm&order=captured_at+asc";
 open(LOG, ">cache/$id.URL")
 	or die("$! , exitting");
 print LOG $URL;
