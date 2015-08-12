@@ -61,9 +61,11 @@ set label 14 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0
 set label 15 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0240, graph 0.925 font FONT . ",15" textcolor rgb "#FF0066";
 set label 16 LABEL at graph 0.0240, graph 0.84 font FONT . ",9" textcolor rgb "#FF0066";
 set style line 1 lc rgb "orange";
+# FIXME: the "24-bin SMA [= 2 h ]" label below is hardcoded
 plot \
 	DATAFILE u 1:2 w p ls 1 notitle, \
-	DATAFILE u 1:($3*CPM2DRE):($3*CPM2DRE) axes x1y2 w l lw 2 palette title "24-bin SMA [= 2 h ]", \
+	DATAFILE u 1:($4*CPM2DRE):($4*CPM2DRE) axes x1y2 w l lw 2 palette title "24-bin SMA [= 2 h ]", \
+	DATAFILE u 1:($3*CPM2DRE):($3*CPM2DRE) axes x1y2 w l lw 1 lc rgbcolor "#000000" notitle, \
 	-100 w filledcurves fc rgb "cyan" fs transparent solid 0.2 title "±3{/Arial-Unicode-MS σ} area [= " . three_sigma_percent . " ]";
 
 
@@ -81,7 +83,7 @@ set grid x y;
 set format x "%m/%d"; set xtics offset 0, graph 0.03; set label 32 END_YEAR at graph 0.5, graph -0.17 center;
 
 plot \
-	DATAFILE u 1:($3*CPM2DRE):($3*CPM2DRE) w l lw 1 palette notitle;
+	DATAFILE u 1:($4*CPM2DRE):($4*CPM2DRE) w l lw 1 palette notitle;
 unset title; unset for [i in "31 32"] label i;
 
 
@@ -99,7 +101,7 @@ set format x "%m/%d"; set xtics offset 0, graph 0.03; set xlabel END_YEAR offset
 # add sensor ID within the graph
 set label 40 sprintf("%d", ID) at graph 0.5, graph 0.75 center font FONT . ",100" back textcolor rgb "#dddddd";
 plot \
-	DATAFILE u 1:($3*CPM2DRE):($3*CPM2DRE) w l lw 1 palette notitle;
+	DATAFILE u 1:($4*CPM2DRE):($4*CPM2DRE) w l lw 1 palette notitle;
 
 unset title; unset for [i in "31 32 40"] label i;
 
@@ -107,5 +109,5 @@ unset title; unset for [i in "31 32 40"] label i;
 # save uSv/h data for ALL.png
 set format x "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format y "%0.3f";
 set table TABLE;
-plot DATAFILE u 1:($3*CPM2DRE) title sprintf("%d: %s [%.3E]", ID, uSv_h, CPM2DRE);
+plot DATAFILE u 1:($4*CPM2DRE) title sprintf("%d: %s [%.3E]", ID, uSv_h, CPM2DRE);
 unset table;
