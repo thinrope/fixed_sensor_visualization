@@ -34,8 +34,8 @@ set xrange [ S_START : S_END ]; # set xlabel "timestamp";
 stats DATAFILE u (iso2s(1)):2 nooutput;
 three_sigma_percent=sprintf("±%0.1f%%",	100.0 * 3*STATS_stddev_y / STATS_mean_y);
 
-min_y = (1.1*STATS_min_y < STATS_mean_y - 4*STATS_stddev_y) ? 1.1*STATS_min_y : STATS_mean_y - 4*STATS_stddev_y; min_y = (min_y > 0) ? min_y : 0;
-max_y = (1.1*STATS_max_y > STATS_mean_y + 4*STATS_stddev_y) ? 1.1*STATS_max_y : STATS_mean_y + 4*STATS_stddev_y;
+min_y = (1.2*STATS_min_y < STATS_mean_y - 4.1*STATS_stddev_y) ? 1.2*STATS_min_y : STATS_mean_y - 4.1*STATS_stddev_y; min_y = (min_y > 0) ? min_y : 0;
+max_y = (1.2*STATS_max_y > STATS_mean_y + 4.1*STATS_stddev_y) ? 1.2*STATS_max_y : STATS_mean_y + 4.1*STATS_stddev_y;
 #min_y = 0; max_y = 350;
 set yrange [min_y: max_y]; set ytics nomirror textcolor rgb "dark-green"; set label 31 "{/*1.1 CPM}" at graph 0.0, 1.04 right textcolor rgb "dark-green";
 set arrow 1 nohead front from graph 0, graph 0 to graph 0, graph 1 lc rgb "dark-green";
@@ -59,7 +59,7 @@ set label 3 sprintf("&{%0.2f±%0.2f μSv/h }(&{%0.1f±%0.1f CPM}), total %d meas
 #set label 13 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0215, graph 0.940 font FONT . ",15" textcolor rgb "black";
 set label 14 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0235, graph 0.930 font FONT . ",15" textcolor rgb "dark-gray";
 set label 15 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0240, graph 0.925 font FONT . ",15" textcolor rgb "#FF0066";
-set label 16 LABEL at graph 0.0240, graph 0.85 font FONT . ",9" textcolor rgb "#FF0066";
+set label 16 LABEL at graph 0.0240, graph 0.84 font FONT . ",9" textcolor rgb "#FF0066";
 set style line 1 lc rgb "orange";
 plot \
 	DATAFILE u 1:2 w p ls 1 notitle, \
