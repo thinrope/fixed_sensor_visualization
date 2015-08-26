@@ -16,8 +16,8 @@ SYNC_CMD1 := wget -q 'https://www.google.com/fusiontables/exporttable?query=sele
 SYNC1 := $(shell [[ ! -e cache/nGeigie_map.csv || -n `find cache/nGeigie_map.csv $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD1) 2>/dev/null )
 SYNC_CMD2 := wget -q 'http://realtime.safecast.org/wp-content/uploads/devices.json' -O cache/devices.json
 SYNC2 := $(shell [[ ! -e cache/devices.json || -n `find cache/devices.json $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD2) 2>/dev/null )
-LIVE_SENSORS := $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep fixed_sensor|cut -d, -f1|sort -n|xargs echo)
-TEST_SENSORS := $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep TEST_sensor|cut -d, -f1|sort -n|xargs echo)
+LIVE_SENSORS ?= $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep fixed_sensor|cut -d, -f1|sort -n|xargs echo)
+TEST_SENSORS ?= $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep TEST_sensor|cut -d, -f1|sort -n|xargs echo)
 REGISTERED_SENSORS := $(shell cat cache/devices.json | perl -ne 'print "$$1 " while (/\"id":"(\d+)"/g)')
 DEAD_SENSORS := $(shell for s in $(REGISTERED_SENSORS); do echo $(LIVE_SENSORS) $(TEST_SENSORS)|grep -q $$s || echo $$s; done |xargs echo)
 
