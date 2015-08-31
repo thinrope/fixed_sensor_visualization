@@ -22,25 +22,29 @@ die ("\n[ERROR] AVG_WINDOW_LARGE must be bigger than AVG_WINDOW_SMALL\n")
 my $server_TZ='UTC';
 
 
+# {{{ Simple Moving Average filter implementation
+# -------------------------------------------------------------------
 sub SMA_filter_init
 {
-	my ($bins, $window) = @_;
+	my ($bins, $config) = @_;
 	@{$bins} = ();
 }
 
 sub SMA_filter_update
 {
-	my ($bins, $window, $item) = @_;
-	push @{$bins}, $item;
+	my ($bins, $config, $value, $dt) = @_;
+	push @{$bins}, $value;
 	shift @{$bins}							# trim the oldest, if buffer too big
-		if (scalar(@{$bins}) > $window);
+		if (scalar(@{$bins}) > $config->{window});
 }
 
 sub SMA_filter_read
 {
-	my ($bins, $window) = @_;
+	my ($bins, $config) = @_;
 	return( (eval join('+', @{$bins})) / scalar(@{$bins}));		# eval buffer
 }
+# }}}
+
 
 my $since_query = qx!TZ=${server_TZ} date +since=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_since}'!; chomp $since_query;
 my $until_query = qx!TZ=${server_TZ} date +until=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_until}'!; chomp $until_query;
@@ -63,11 +67,11 @@ open(OUT, ">cache/$id.csv")
 my $t_prev = -1;
 my $dt_prev = 36000;	# NOTE: Big number initially, 10h
 
-my @SMA_LARGE_bins = ();
-&SMA_filter_init(\@SMA_LARGE_bins, $AVG_WINDOW_LARGE);
+my @SMA_LARGE_bins = (); my %SMA_LARGE_config = ( 'window' => $AVG_WINDOW_LARGE);
+&SMA_filter_init(\@SMA_LARGE_bins, \%SMA_LARGE_config);
 
-my @SMA_SMALL_bins = ();
-&SMA_filter_init(\@SMA_SMALL_bins, $AVG_WINDOW_SMALL);
+my @SMA_SMALL_bins = (); my %SMA_SMALL_config = ( 'window' => $AVG_WINDOW_SMALL);
+&SMA_filter_init(\@SMA_SMALL_bins, \%SMA_SMALL_config);
 
 while(<IN>)
 {
@@ -82,11 +86,11 @@ while(<IN>)
 		my $dt = $timestamp->epoch() - $t_prev;
 		$t_prev = $timestamp->epoch();
 
-		&SMA_filter_update(\@SMA_LARGE_bins, $AVG_WINDOW_LARGE, $R[3]);
-		my $SMA_LARGE = &SMA_filter_read(\@SMA_LARGE_bins, $AVG_WINDOW_LARGE);
+		&SMA_filter_update(\@SMA_LARGE_bins, \%SMA_LARGE_config, $R[3], $dt);
+		my $SMA_LARGE = &SMA_filter_read(\@SMA_LARGE_bins, \%SMA_LARGE_config);
 
-		&SMA_filter_update(\@SMA_SMALL_bins, $AVG_WINDOW_SMALL, $R[3]);
-		my $SMA_SMALL = &SMA_filter_read(\@SMA_SMALL_bins, $AVG_WINDOW_SMALL);
+		&SMA_filter_update(\@SMA_SMALL_bins, \%SMA_SMALL_config, $R[3], $dt);
+		my $SMA_SMALL = &SMA_filter_read(\@SMA_SMALL_bins, \%SMA_SMALL_config);
 
 		print OUT "\n"				# print blank line, if there was missing data (for gnuplot)
 			if ($dt > 5.0 * $dt_prev);
@@ -100,3 +104,5 @@ close(OUT)
 	or die("$!, exitting");
 close(IN)
 	or die("$! ,exitting");
+__END__
+# vim: set foldmethod=marker :
