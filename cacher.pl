@@ -45,6 +45,35 @@ sub SMA_filter_read
 }
 # }}}
 
+# {{{ Low Pass filter implementation
+# -------------------------------------------------------------------
+sub LP_filter_init
+{
+	my ($bins, $config) = @_;
+
+	@{$bins} = ();
+	map { $bins->[$_] = $config->{IV}; } 0 .. $config->{order};	# OBO!
+
+	my $gainScale = 1.0 / sqrt( 2.0 ** (1.0/$config->{order}) - 1.0);
+        $config->{rc} = 1.0 / ( 2.0 * 3.1415927 * $config->{cutoff} * $gainScale );
+}
+
+sub LP_filter_update
+{
+	my ($bins, $config, $v, $dt) = @_;
+
+	my $a  =  $dt / ($config->{rc} + $dt);
+
+	$bins->[0] = $v;
+	map { $bins->[$_] = (1.0 - $a ) * $bins->[$_] + $a * $bins->[$_ - 1];} 1 .. $config->{order};
+}
+
+sub LP_filter_read
+{
+	my ($bins, $config) = @_;
+	return $bins->[$config->{order}];
+}
+# }}}
 
 my $since_query = qx!TZ=${server_TZ} date +since=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_since}'!; chomp $since_query;
 my $until_query = qx!TZ=${server_TZ} date +until=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_until}'!; chomp $until_query;
@@ -73,6 +102,9 @@ my @SMA_LARGE_bins = (); my %SMA_LARGE_config = ( 'window' => $AVG_WINDOW_LARGE)
 my @SMA_SMALL_bins = (); my %SMA_SMALL_config = ( 'window' => $AVG_WINDOW_SMALL);
 &SMA_filter_init(\@SMA_SMALL_bins, \%SMA_SMALL_config);
 
+#my @LP_SMALL_bins = (); my %LP_SMALL_config = ( 'order' => 1, 'cutoff' => 60E-6, 'IV' => 0.0);
+#&LP_filter_init(\@LP_SMALL_bins, \%LP_SMALL_config);
+
 while(<IN>)
 {
 	my @R = split(/,/, $_, 5);
@@ -91,6 +123,9 @@ while(<IN>)
 
 		&SMA_filter_update(\@SMA_SMALL_bins, \%SMA_SMALL_config, $R[3], $dt);
 		my $SMA_SMALL = &SMA_filter_read(\@SMA_SMALL_bins, \%SMA_SMALL_config);
+
+		#&LP_filter_update(\@LP_SMALL_bins, \%LP_SMALL_config, $R[3], $dt);
+		#my $LP_SMALL = &LP_filter_read(\@LP_SMALL_bins, \%LP_SMALL_config);
 
 		print OUT "\n"				# print blank line, if there was missing data (for gnuplot)
 			if ($dt > 5.0 * $dt_prev);
