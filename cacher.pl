@@ -4,21 +4,43 @@ use strict;
 use utf8;
 use DateTime::Format::ISO8601;
 
-die ("\n[ERROR] Invalid number of arguments[", scalar @ARGV, "]!\n\nUsage:\n\t$0 <sensor_id> <fetch_since> <fetch_until> <TIMEZONE> <TZ> <SMA_BINS1> <SMA_BINS2>\n")
+die ("\n[ERROR] Invalid number of arguments[", scalar @ARGV, "]!\n\n",
+	"Usage:\n\t$0 <sensor_id> <fetch_since> <fetch_until> <TIMEZONE> <TZ> <AVG_WINDOW_LARGE> <AVG_VINDOW_SMALL>\n")
 	unless (scalar @ARGV == 7);
 my $id = $ARGV[0];
 my $fetch_since = $ARGV[1];
 my $fetch_until = $ARGV[2];
 my $TIMEZONE = $ARGV[3];
 my $TZ = $ARGV[4];
-my $SMA_BINS1 = $ARGV[5];
-my $SMA_BINS2 = $ARGV[6];
+my $AVG_WINDOW_LARGE = $ARGV[5];
+my $AVG_WINDOW_SMALL = $ARGV[6];
 
-die ("\n[ERROR] SMA_BINS1 must be more than SMA_BINS2\n")
-	unless ($SMA_BINS1 > $SMA_BINS2);
+die ("\n[ERROR] AVG_WINDOW_LARGE must be bigger than AVG_WINDOW_SMALL\n")
+	unless ($AVG_WINDOW_LARGE > $AVG_WINDOW_SMALL);
 
 # API server uses in UTC in query and results
 my $server_TZ='UTC';
+
+
+sub SMA_filter_init
+{
+	my ($bins, $window) = @_;
+	@{$bins} = ();
+}
+
+sub SMA_filter_update
+{
+	my ($bins, $window, $item) = @_;
+	push @{$bins}, $item;
+	shift @{$bins}							# trim the oldest, if buffer too big
+		if (scalar(@{$bins}) > $window);
+}
+
+sub SMA_filter_read
+{
+	my ($bins, $window) = @_;
+	return( (eval join('+', @{$bins})) / scalar(@{$bins}));		# eval buffer
+}
 
 my $since_query = qx!TZ=${server_TZ} date +since=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_since}'!; chomp $since_query;
 my $until_query = qx!TZ=${server_TZ} date +until=%d%%2F%m%%2F%Y+%H%%3A%M%%3A%S --date='${fetch_until}'!; chomp $until_query;
@@ -38,9 +60,15 @@ open(OUT, ">cache/$id.csv")
 	or die("$! , exitting");
 
 
-my @sma_bins = ();
 my $t_prev = -1;
 my $dt_prev = 36000;	# NOTE: Big number initially, 10h
+
+my @SMA_LARGE_bins = ();
+&SMA_filter_init(\@SMA_LARGE_bins, $AVG_WINDOW_LARGE);
+
+my @SMA_SMALL_bins = ();
+&SMA_filter_init(\@SMA_SMALL_bins, $AVG_WINDOW_SMALL);
+
 while(<IN>)
 {
 	my @R = split(/,/, $_, 5);
@@ -54,22 +82,17 @@ while(<IN>)
 		my $dt = $timestamp->epoch() - $t_prev;
 		$t_prev = $timestamp->epoch();
 
-		push @sma_bins, $R[3];							# push in buffer
-		shift @sma_bins								# trim the oldest, if buffer too big
-			if (scalar(@sma_bins) > $SMA_BINS1);
-		#print STDERR  join(":", $#sma_bins-11, $#sma_bins), "\t", join("\t", @sma_bins), "\n";
-		my $sma1 = (eval join('+', @sma_bins)) / scalar(@sma_bins);		# eval buffer
-		my $sma2 = $sma1;							# place for smaller buffer
-		if (scalar(@sma_bins) > $SMA_BINS2)					# 
-		{
-			$sma2 = (eval join('+', @sma_bins[$#sma_bins-$SMA_BINS2 + 1 .. $#sma_bins])) / $SMA_BINS2;	# use only last $SMA_BINS2 bins, NOTE: OB1
-		}
+		&SMA_filter_update(\@SMA_LARGE_bins, $AVG_WINDOW_LARGE, $R[3]);
+		my $SMA_LARGE = &SMA_filter_read(\@SMA_LARGE_bins, $AVG_WINDOW_LARGE);
+
+		&SMA_filter_update(\@SMA_SMALL_bins, $AVG_WINDOW_SMALL, $R[3]);
+		my $SMA_SMALL = &SMA_filter_read(\@SMA_SMALL_bins, $AVG_WINDOW_SMALL);
 
 		print OUT "\n"				# print blank line, if there was missing data (for gnuplot)
 			if ($dt > 5.0 * $dt_prev);
 		$dt_prev = $dt;
 
-		print OUT join(',', "${timestamp}${TZ}", $R[3], sprintf("%0.3f,%0.3f,%d\n", $sma1, $sma2, $dt));
+		print OUT join(',', "${timestamp}${TZ}", $R[3], sprintf("%0.3f,%0.3f,%d\n", $SMA_LARGE, $SMA_SMALL, $dt));
 	}
 }
 
