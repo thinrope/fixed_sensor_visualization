@@ -24,3 +24,16 @@ set title "Safecast fixed sensors: DRE at " . NOW font "Arial Unicode MS,12";
 
 graph_title(n) = system("cat tmp/" . n . ".title");
 plot for [ID in IDs] "tmp/" . ID . ".data" u 1:2 axes x1y2 w l lw 1 title graph_title(ID);
+
+exit;
+# Plot update window graph
+unset for [i in "2"] arrow i; unset key; unset lmargin; set grid x y front; set ytics; unset y2tics; unset y2label;
+set datafile separator ",";
+set xdata time; set timefmt '%Y-%m-%dT%H:%M:%S' . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
+set key default; set key bottom center outside maxrows 3;
+set term png enhanced font "Arial Unicode MS,9" size 2000,800 background "#ffffef";
+OUTFILE=OUTFILE[1:strstrt(OUTFILE,".")-1] . "_window" . OUTFILE[strstrt(OUTFILE,"."):*];
+set output OUTFILE;
+set title "Safecast fixed sensors: update window at " . NOW font "Arial Unicode MS,12";
+set yrange [-10:10*300];
+plot for [ID in IDs] "cache/" . ID . ".csv" u 1:5 w l lw 1 title ID;

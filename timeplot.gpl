@@ -7,6 +7,7 @@ CPM2DRE=system("cat cache/nGeigie_map.csv|cut -d, -f1,2|grep -P '^" . ID . ",' |
 CPM2DRE=CPM2DRE + 0.0;
 DATAFILE=sprintf("cache/%d.csv", ID);
 OUTFILE=sprintf("out/%d.png", ID);
+OUTFILE_window=sprintf("out/%d_window.png", ID);
 OUTFILE_small=sprintf("out/%d_small.png", ID);
 TABLE=sprintf("tmp/%d.data", ID);
 
@@ -67,14 +68,13 @@ plot \
 	DATAFILE u 1:($4*CPM2DRE):($4*CPM2DRE) axes x1y2 w l lw 2 palette title "24-bin SMA [= 2 h ]", \
 	DATAFILE u 1:($3*CPM2DRE):($3*CPM2DRE) axes x1y2 w l lw 1 lc rgbcolor "#000000" notitle, \
 	-100 w filledcurves fc rgb "cyan" fs transparent solid 0.2 title "±3{/Arial-Unicode-MS σ} area [= " . three_sigma_percent . " ]";
-
+unset for [i in "1"] object i; unset for [i in "1 2"] arrow i; unset for [i in "1 2 3 13 14 15 16 31 32"] label i; unset title;
 
 # small PNGs for Fusion tables
 FONT="Futura Std Medium";
 set term png enhanced notransparent nointerlace truecolor butt font FONT . ",7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
 set output OUTFILE_small;
 
-unset for [i in "1"] object i; unset for [i in "1 2"] arrow i; unset for [i in "1 2 3 13 14 15 16 31 32"] label i;
 uSv_h = sprintf("%0.2f ± %0.2f", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
 set title sprintf("%s μSv/h (%0.1f ± %0.1f CPM)", uSv_h, STATS_mean_y, 3*STATS_stddev_y) font FONT . ",9";
 unset ytics; unset y2tics;
@@ -103,7 +103,7 @@ set label 40 sprintf("%d", ID) at graph 0.5, graph 0.75 center font FONT . ",100
 plot \
 	DATAFILE u 1:($4*CPM2DRE):($4*CPM2DRE) w l lw 1 palette notitle;
 
-unset title; unset for [i in "31 32 40"] label i;
+unset title; unset for [i in "31 32 40"] label i; unset xlabel;
 
 
 # save uSv/h data for ALL.png
@@ -111,3 +111,20 @@ set format x "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format y "%0.3f";
 set table TABLE;
 plot DATAFILE u 1:($4*CPM2DRE) title sprintf("%d: %s [%.3E]", ID, uSv_h, CPM2DRE);
 unset table;
+
+# update window graphs
+FONT="Arial Unicode MS";
+set term png enhanced notransparent nointerlace truecolor butt font FONT . ",8" size CONFIG_WIDTH_BIG, CONFIG_HEIGHT_BIG background "#ffffef";
+set output OUTFILE_window;
+win_default=5;
+set title "Update window for sensor " . ID .", in number of intervals (default τ= ". win_default . " min)";
+#set label 13 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0215, graph 0.940 font FONT . ",15" textcolor rgb "black";
+set label 14 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0235, graph 0.930 font FONT . ",15" textcolor rgb "dark-gray";
+set label 15 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0240, graph 0.925 font FONT . ",15" textcolor rgb "#FF0066";
+set label 16 LABEL at graph 0.0240, graph 0.84 font FONT . ",9" textcolor rgb "#FF0066";
+set format x "%m/%d"; set xtics offset 0, graph 0.03; set xlabel END_YEAR offset 0,1;
+# default update in minutes
+set yrange[0:10]; set ytics 0, 1; set format y "%.0fτ";
+plot \
+	DATAFILE u 1:($5/60/win_default) w l lw 1 lc rgb "blue" notitle;
+unset ytics; unset ylabel; unset title; unset for [i in "13 14 15 16"] label i

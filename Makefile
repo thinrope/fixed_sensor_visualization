@@ -33,7 +33,7 @@ all:	out nodata	| bootstrap
 
 bootstrap:	cache/nGeigie_map.csv cache/devices.json
 cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) | bootstrap
-out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/TEST.html out/nGeigie_map.png out/tilemap.png	| cache out/
+out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/window.html out/TEST.html out/nGeigie_map.png out/tilemap.png	| cache out/
 daily:	$(TEST_SENSORS:%=daily/%.png)	| cache daily/
 
 
@@ -101,6 +101,15 @@ out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/
 	@{ \
 		cat in/index.header; \
 		perl -e 'my $$q="\""; for my $$id (@ARGV) { open(IN, "<cache/$${id}.URL") or die; $${URL} = do {local $$/; <IN>}; $${URL} =~ s/\.csv//; close(IN) or die; print "\t\t\t", "<a href=$${q}$${URL}$${q}><img style=$${q}padding: 0;$${q} src=$${q}$${id}.png$${q} alt=$${q}Sensor_$${id}_data$${q} width=$${q}$(CONFIG_WIDTH_BIG)$${q} height=$${q}$(CONFIG_HEIGHT_BIG)$${q} /></a>\n";}' $(LIVE_SENSORS); \
+		cat in/index.footer |perl -pe 's#__PUT__DATE__HERE__#$(NOW) [<a href="https://github.com/thinrope/fixed_sensor_visualization/commit/$(VERSION)">$(VERSION)</a>$(SOURCE_STATUS)]#;'; \
+	} >$@
+	@echo -e "\t$@ compiled."
+
+out/window.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/LIVE.png ${CONFIG} | out/
+	@echo "Compiling $@ ..."
+	@{ \
+		cat in/index.header; \
+		perl -e 'my $$q="\""; for my $$id (@ARGV) { open(IN, "<cache/$${id}.URL") or die; $${URL} = do {local $$/; <IN>}; $${URL} =~ s/\.csv//; close(IN) or die; print "\t\t\t", "<a href=$${q}$${URL}$${q}><img style=$${q}padding: 0;$${q} src=$${q}$${id}_window.png$${q} alt=$${q}Sensor_$${id}_update_window$${q} width=$${q}$(CONFIG_WIDTH_BIG)$${q} height=$${q}$(CONFIG_HEIGHT_BIG)$${q} /></a>\n";}' $(LIVE_SENSORS); \
 		cat in/index.footer |perl -pe 's#__PUT__DATE__HERE__#$(NOW) [<a href="https://github.com/thinrope/fixed_sensor_visualization/commit/$(VERSION)">$(VERSION)</a>$(SOURCE_STATUS)]#;'; \
 	} >$@
 	@echo -e "\t$@ compiled."
