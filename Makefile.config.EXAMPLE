@@ -1,22 +1,22 @@
 # sensor list is fetched from the Fusion tables
 
-# SMA smoothing related
-CONFIG_SMA1 := 24
-CONFIG_SMA2 := 12
+# SMA smoothing related, in bins
+CONFIG_SMA1 := 288
+CONFIG_SMA2 := 24
 
 # syntax: option to `find` command
 MAX_AGE_TO_CACHE := -mmin +30
 
 # syntax: option to `date` command
 # NOTE: Do NOT forget the single quotes below!
-PLOT_FROM := '30 days ago'
-PLOT_TO := 'now'
+PLOT_FROM ?= '30 days ago'
+PLOT_TO ?= 'now'
 
 # in px
 CONFIG_WIDTH_SMALL := 320
 CONFIG_HEIGHT_SMALL := 200
 
-CONFIG_WIDTH_BIG := 500
+CONFIG_WIDTH_BIG := 450
 CONFIG_HEIGHT_BIG := 300
 
 CONFIG_WIDTH_ALL := 900
