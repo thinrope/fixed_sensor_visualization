@@ -12,12 +12,10 @@ VERSION := $(shell git log -n 1 --pretty=format:"%h" 2>/dev/null)
 SOURCE_STATUS := $(shell git_status=$$(git status --porcelain); if test -n "$${git_status}"; then echo " +α"; fi)
 EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && touch cache/.run 2>/dev/null )
 
-SYNC_CMD1 := wget -q 'https://www.google.com/fusiontables/exporttable?query=select+*+from+14rS7ksuRpjncURPzdrGJ2KDay0DpfyofKDCA7LYP' -O cache/nGeigie_map.csv
-SYNC1 := $(shell [[ ! -e cache/nGeigie_map.csv || -n `find cache/nGeigie_map.csv $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD1) 2>/dev/null )
 SYNC_CMD2 := wget -q 'http://realtime.safecast.org/wp-content/uploads/devices.json' -O cache/devices.json
 SYNC2 := $(shell [[ ! -e cache/devices.json || -n `find cache/devices.json $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD2) 2>/dev/null )
-LIVE_SENSORS ?= $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep fixed_sensor|cut -d, -f1|sort -n|xargs echo)
-TEST_SENSORS ?= $(shell cat cache/nGeigie_map.csv |cut -d, -f1,4|fgrep TEST_sensor|cut -d, -f1|sort -n|xargs echo)
+LIVE_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4|fgrep fixed_sensor|cut -d, -f1|sort -n|xargs echo)
+TEST_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4|fgrep TEST_sensor|cut -d, -f1|sort -n|xargs echo)
 REGISTERED_SENSORS := $(shell cat cache/devices.json | perl -ne 'print "$$1 " while (/\"id":"(\d+)"/g)')
 DEAD_SENSORS := $(shell for s in $(REGISTERED_SENSORS); do echo $(LIVE_SENSORS) $(TEST_SENSORS)|grep -q $$s || echo $$s; done |xargs echo)
 
@@ -31,7 +29,7 @@ GNUPLOT_VARS := \
 .PHONY:		clean distclean mrproper all expire cache out daily publish view printvars bootstrap
 all:	out nodata	| bootstrap
 
-bootstrap:	cache/nGeigie_map.csv cache/devices.json
+bootstrap:	cache/devices.json
 cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) | bootstrap
 out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/window.html out/TEST.html out/tilemap.png	| cache out/
 daily:	$(TEST_SENSORS:%=daily/%.png)	| cache daily/
@@ -64,17 +62,12 @@ cache/%.csv:	cacher.pl cache/.run ${CONFIG}
 	@./cacher.pl $(basename $(notdir $@)) $(PLOT_FROM) $(PLOT_TO) $(CONFIG_TIMEZONE) $(CONFIG_TZ) $(CONFIG_SMA1) $(CONFIG_SMA2)
 	@echo -e "\t$@ fetched."
 
-cache/nGeigie_map.csv:	cache/.run ${CONFIG}
-	@echo "Fetching data for $@ ..."
-	@$(SYNC_CMD1)
-	@echo -e "\t$@ fetched."
-
 cache/devices.json:	cache/.run ${CONFIG}
 	@echo "Fetching data for $@ ..."
 	@$(SYNC_CMD2)
 	@echo -e "\t$@ fetched."
 
-out/%.png:	cache/%.csv cache/nGeigie_map.csv timeplot.gpl $(CONFIG) | out/ tmp/
+out/%.png:	cache/%.csv in/nGeigie_map.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
 	-@gnuplot -e "ID=$(basename $(notdir $@)); $(GNUPLOT_VARS)" ./timeplot.gpl
 	@head -n3 tmp/$(basename $(notdir $@)).data |tail -n1|perl -ne '/"(.*)"/; print "$$1\n"' >tmp/$(basename $(notdir $@)).title
