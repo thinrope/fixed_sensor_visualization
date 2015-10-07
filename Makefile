@@ -33,7 +33,7 @@ all:	out nodata	| bootstrap
 
 bootstrap:	cache/nGeigie_map.csv cache/devices.json
 cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) | bootstrap
-out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/window.html out/TEST.html out/nGeigie_map.png out/tilemap.png	| cache out/
+out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/window.html out/TEST.html out/tilemap.png	| cache out/
 daily:	$(TEST_SENSORS:%=daily/%.png)	| cache daily/
 
 
@@ -89,9 +89,6 @@ out/TEST.png:	$(TEST_SENSORS:%=out/%.png) timeplot_all.gpl ${CONFIG} | out/ tmp/
 	@echo "Plotting $@ ..."
 	@gnuplot -e "OUTFILE='$@'; IDs='$(TEST_SENSORS)'; $(GNUPLOT_VARS)" ./timeplot_all.gpl
 	@echo -e "\t$@ plotted."
-
-out/nGeigie_map.png:	in/nGeigie_map.png ${CONFIG} | out/
-	@cp -a $< $@
 
 out/tilemap.png:	in/tilemap.png ${CONFIG} | out/
 	@cp -a $< $@
