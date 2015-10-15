@@ -1,57 +1,57 @@
-ID,CPM2DRE,DRE2CPM,type,Label,QTH_country,QTH_rest,sensor_model,sensor_type,loc,in_testing_since,in_production_since,timestamp_to,fill_color,border_color,img,alt,width,height,comment,DEV_ID,sensor_cluster_ID
-40,0.002994012,334,fixed_sensor,ID: 40,Japan,"Fukushima-ken, Minami-Soma-shi",LND 7313,GM_tube,37.5635 140.9917,2014,,2014-04-20,large_red,,http://gamma.tar.bz/nGeigies/40_small.png,sensor data,320,200,,,
-41,0.002994012,334,DEAD_sensor,ID: 41,Japan,"Fukushima-ken, Iwaki-shi",LND 7313,GM_tube,37.0105 140.9253,2014,,2014-04-20,large_red,,http://gamma.tar.bz/nGeigies/41_small.png,sensor data,320,200,"2015-09-08: ->DEAD_sensor (to be replaced by 100101,100102)",,
-42,0.002994012,334,DEAD_sensor,ID: 42,Japan,"Fukushima-ken, Tomioka-machi",LND 7313,GM_tube,37.3293 140.9783,2014,,2014-04-20,large_red,,http://gamma.tar.bz/nGeigies/42_small.png,sensor data,320,200,,,
-49,0.002994012,334,fixed_sensor,ID: 49,Japan,"Tokyo-to, Embassy of the Netherlands",LND 7313,GM_tube,35.6617 139.7447,2014,,2014-04-20,large_red,,http://gamma.tar.bz/nGeigies/49_small.png,sensor data,320,200,,,
-58,0.002994012,334,DEAD_sensor,ID: 58,USA,"DC, NRCD",LND 7313,GM_tube,38.904927 -77.03476,2014,,2014-04-20,large_red,,http://gamma.tar.bz/nGeigies/58_small.png,sensor data,320,200,,,
-59,0.002994012,334,fixed_sensor,ID: 59,USA,"MA, Boston, MIT",LND 7313,GM_tube,42.360781 -71.087719,2014,,2014-04-20,large_red,,http://gamma.tar.bz/nGeigies/59_small.png,sensor data,320,200,,,
-60,0.002994012,334,fixed_sensor,ID: 60,USA,"CA, Sebastopol",LND 7313,GM_tube,38.4037 -122.818386,2014,,2014-04-20,large_red,,http://gamma.tar.bz/nGeigies/60_small.png,sensor data,320,200,2015-08-31: updated QTH,,
-62,0.002994012,334,DEAD_sensor,ID: 62,Japan,"Tokyo-to, Shibuya-ku, Safecast office",LND 7313,GM_tube,35.6564 139.6954,2014,,2014-02-10,large_red,,http://gamma.tar.bz/nGeigies/62_small.png,sensor data,320,200,"2015-02-18 resurrected feed
-2015-03-08 moved to TESTING, people constantly playing with sources apparently",,
-71,0.002994012,334,fixed_sensor,ID: 71,USA,"MA, Manchester",LND 7313,GM_tube,42.565088 -70.783681,2014,,2014-07-20,large_red,,http://gamma.tar.bz/nGeigies/71_small.png,sensor data,320,200,,,
-54,0.008333334,120,fixed_sensor,ID: 54,Switzerland,Lausanne,LND 712,GM_tube,46.524491 6.630666,2014,,2014-11-09,large_purple,,http://gamma.tar.bz/nGeigies/54_small.png,sensor data,320,200,2014-11-10: moved to new QTH,,
-77,0.006666667,150,DEAD_sensor,ID: 77,UNKNOWN,somewhere on Earth,SBM-20,GM_tube,34.56 140.77,2014,,2014-08-06,large_blue,,http://gamma.tar.bz/nGeigies/77_small.png,sensor data,320,200,,,
-80,0.0032258064,310,TEST_sensor,ID: 80,UNKNOWN,somewhere on Earth,SI-180G,GM_tube,34.56 140.80,2014,,2014-08-08,large_blue,,http://gamma.tar.bz/nGeigies/80_small.png,sensor data,320,200,,,
-83,0.008333334,120,TEST_sensor,ID: 83,UNKNOWN,somewhere on Earth,LND712,GM_tube,34.56 140.83,2014,,2014-08-27,large_purple,,http://gamma.tar.bz/nGeigies/83_small.png,sensor data,320,200,2015-08-31: unify sensor spelling,,
-84,0.008333334,120,TEST_sensor,ID: 84,UNKNOWN,somewhere on Earth,LND712,GM_tube,34.56 140.84,2014,,2014-08-27,large_purple,,http://gamma.tar.bz/nGeigies/84_small.png,sensor data,320,200,2015-08-31: unify sensor spelling,,
-9975,0.002994012,334,DEAD_sensor,ID: 9975,Japan,"Tokyo-to, Shibuya-ku, Safecast office",LND 7318,GM_tube,35.6563892 139.6954427,2015,,2015-03-08,large_red,,http://gamma.tar.bz/nGeigies/9975_small.png,sensor data,320,200,was mistakenly put as live sensor in Hirono...,,
-79,0.002994012,334,fixed_sensor,ID: 79,USA,"HI, Haiku",LND 7313,GM_tube,20.9109 -156.2887,2014,,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/79_small.png,sensor data,320,200,IMI Hawk Radius Probe #1059,,
-72,0.002994012,334,fixed_sensor,ID: 72,USA,"WA, Seattle",LND 7313,GM_tube,47.612268 -122.345039,2014,,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/72_small.png,sensor data,320,200,,,
-61,0.002994012,334,fixed_sensor,ID: 61,USA,"CA, Los Angeles, Griffith Park",LND 7313,GM_tube,34.121726 -118.269582,2014,,2014-09-22,large_red,,http://gamma.tar.bz/nGeigies/61_small.png,sensor data,320,200,2015-08-31: fixed wrong LOC,,
-90,0.002994012,334,DEAD_sensor,ID: 90,Japan,"Chiba-ken, Ichikawa-shi",LND 7313,GM_tube,35.7459 139.9182,2014,,2014-11-01,large_red,,http://gamma.tar.bz/nGeigies/90_small.png,sensor data,320,200,,,
-78,0.0010416667,960,fixed_sensor,ID: 78,USA,"CA, Botega Head (in water)",LND 78017,GM_tube,38.3151 -123.0752,2015,,,large_blue,,http://gamma.tar.bz/nGeigies/78_small.png,sensor data,320,200,"2015-08-31: fixed sensor type (ID reuse) to LND78017 in seawater, moved to TEST",,
-100,0.002994012,334,fixed_sensor,ID: 100,Japan,"Chiba-ken, Ichikawa-shi",LND 73126,GM_tube,35.745923 139.918063,2015,,,large_green,,http://gamma.tar.bz/nGeigies/100_small.png,sensor data,320,200,"Jam,  Tensy-based, LND7312",,
-99,0.002994012,334,fixed_sensor,ID: 99,USA,"MA, Newburyport, C-10 Office",LND 7313,GM_tube,42.812292 -70.872505,2015,,2014-07-20,large_red,,http://gamma.tar.bz/nGeigies/99_small.png,sensor data,320,200,enabled on 2015-02-18,,
-101,0.002994012,334,fixed_sensor,ID: 101,Japan,"Fukushima-ken, Aizuwakamatsu-shi, Eyes Japan",LND 7313,GM_tube,37.4932 139.93305,2015,,2014-07-20,large_red,,http://gamma.tar.bz/nGeigies/101_small.png,sensor data,320,200,enabled on 2015-02-18,,
-107,0.002994012,334,fixed_sensor,ID: 107,USA,"CA, Palo Alto, Triple El, #1",LND 73126,GM_tube,37.442836 -122.128094,2015,,2014-07-20,large_red,,http://gamma.tar.bz/nGeigies/107_small.png,sensor data,320,200,"enabled on 2015-02-18, pancake",,A106
-106,0.008333334,120,fixed_sensor,ID: 106,USA,"CA, Palo Alto, Triple El, #2",LND 7128,GM_tube,37.442836 -122.128094,2015,,2014-07-20,large_purple,,http://gamma.tar.bz/nGeigies/106_small.png,sensor data,320,200,"enabled on 2015-02-18, energy compensated",,A106
-73,0.002994012,334,fixed_sensor,ID: 73,USA,"MA, Cambridge, MIT",LND 7313,GM_tube,42.381242 -71.111946,2014,,2014-12-01,large_red,,http://gamma.tar.bz/nGeigies/73_small.png,sensor data,320,200,"was present on RT, added 2015-03-25",,
-75,0.002994012,334,fixed_sensor,ID: 75,Taiwan,"Taipei, Fabcafe",LND 7318,GM_tube,25.0439 121.5290,2016,,2016-06-01,large_red,,http://gamma.tar.bz/nGeigies/75_small.png,sensor data,320,200,"2015-05: old 75 renamed to 9975
-2015-06-18: TEST --> fixed",,
-126,0.008333334,120,fixed_sensor,ID: 126,Japan,"Shiga-ken, Hikone, YR-Design Main",LND 712,GM_tube,35.2683 136.2493,2015,,2016-06-01,large_purple,,http://gamma.tar.bz/nGeigies/126_small.png,sensor data,320,200,"2015-06-28: TEST
-2015-06-29: TEST --> fixed",,
-100012,0.008333334,120,fixed_sensor,ID: 100012,Japan,"Fukushima-ken, Matsukawa-machi, #2",LND 7128,GM_tube,37.6590 140.4590,2015,,,large_purple,,http://gamma.tar.bz/nGeigies/100012_small.png,sensor data,320,200,"2015-06-28: TEST
+"sensor_ID","sensor_cluster_ID","DRE2CPM","type","QTH_country","QTH_rest","sensor_model","sensor_type","loc","comment"
+40,,334,"fixed_sensor","Japan","Fukushima-ken, Minami-Soma-shi","LND 7313","GM_tube","37.5635 140.9917",
+41,,334,"DEAD_sensor","Japan","Fukushima-ken, Iwaki-shi","LND 7313","GM_tube","37.0105 140.9253","2015-09-08: ->DEAD_sensor (to be replaced by 100101,100102)"
+42,,334,"DEAD_sensor","Japan","Fukushima-ken, Tomioka-machi","LND 7313","GM_tube","37.3293 140.9783",
+49,,334,"fixed_sensor","Japan","Tokyo-to, Embassy of the Netherlands","LND 7313","GM_tube","35.6617 139.7447",
+58,,334,"DEAD_sensor","USA","DC, NRCD","LND 7313","GM_tube","38.904927 -77.03476",
+59,,334,"fixed_sensor","USA","MA, Boston, MIT","LND 7313","GM_tube","42.360781 -71.087719",
+60,,334,"fixed_sensor","USA","CA, Sebastopol","LND 7313","GM_tube","38.4037 -122.818386","2015-08-31: updated QTH"
+62,,334,"DEAD_sensor","Japan","Tokyo-to, Shibuya-ku, Safecast office","LND 7313","GM_tube","35.6564 139.6954","2015-02-18 resurrected feed
+2015-03-08 moved to TESTING, people constantly playing with sources apparently"
+71,,334,"fixed_sensor","USA","MA, Manchester","LND 7313","GM_tube","42.565088 -70.783681",
+54,,120,"fixed_sensor","Switzerland","Lausanne","LND 712","GM_tube","46.524491 6.630666","2014-11-10: moved to new QTH"
+77,,150,"DEAD_sensor","UNKNOWN","somewhere on Earth","SBM-20","GM_tube","34.56 140.77",
+80,,310,"TEST_sensor","UNKNOWN","somewhere on Earth","SI-180G","GM_tube","34.56 140.80",
+83,,120,"TEST_sensor","UNKNOWN","somewhere on Earth","LND712","GM_tube","34.56 140.83","2015-08-31: unify sensor spelling"
+84,,120,"TEST_sensor","UNKNOWN","somewhere on Earth","LND712","GM_tube","34.56 140.84","2015-08-31: unify sensor spelling"
+9975,,334,"DEAD_sensor","Japan","Tokyo-to, Shibuya-ku, Safecast office","LND 7318","GM_tube","35.6563892 139.6954427","was mistakenly put as live sensor in Hirono..."
+79,,334,"fixed_sensor","USA","HI, Haiku","LND 7313","GM_tube","20.9109 -156.2887","IMI Hawk Radius Probe #1059"
+72,,334,"fixed_sensor","USA","WA, Seattle","LND 7313","GM_tube","47.612268 -122.345039",
+61,,334,"fixed_sensor","USA","CA, Los Angeles, Griffith Park","LND 7313","GM_tube","34.121726 -118.269582","2015-08-31: fixed wrong LOC"
+90,,334,"DEAD_sensor","Japan","Chiba-ken, Ichikawa-shi","LND 7313","GM_tube","35.7459 139.9182",
+78,,960,"fixed_sensor","USA","CA, Botega Head (in water)","LND 78017","GM_tube","38.3151 -123.0752","2015-08-31: fixed sensor type (ID reuse) to LND78017 in seawater, moved to TEST"
+100,,334,"fixed_sensor","Japan","Chiba-ken, Ichikawa-shi","LND 73126","GM_tube","35.745923 139.918063","Jam,  Tensy-based, LND7312"
+99,,334,"fixed_sensor","USA","MA, Newburyport, C-10 Office","LND 7313","GM_tube","42.812292 -70.872505","enabled on 2015-02-18"
+101,,334,"fixed_sensor","Japan","Fukushima-ken, Aizuwakamatsu-shi, Eyes Japan","LND 7313","GM_tube","37.4932 139.93305","enabled on 2015-02-18"
+107,"A106",334,"fixed_sensor","USA","CA, Palo Alto, Triple El, #1","LND 73126","GM_tube","37.442836 -122.128094","enabled on 2015-02-18, pancake"
+106,"A106",120,"fixed_sensor","USA","CA, Palo Alto, Triple El, #2","LND 7128","GM_tube","37.442836 -122.128094","enabled on 2015-02-18, energy compensated"
+73,,334,"fixed_sensor","USA","MA, Cambridge, MIT","LND 7313","GM_tube","42.381242 -71.111946","was present on RT, added 2015-03-25"
+75,,334,"fixed_sensor","Taiwan","Taipei, Fabcafe","LND 7318","GM_tube","25.0439 121.5290","2015-05: old 75 renamed to 9975
+2015-06-18: TEST --> fixed"
+126,,120,"fixed_sensor","Japan","Shiga-ken, Hikone, YR-Design Main","LND 712","GM_tube","35.2683 136.2493","2015-06-28: TEST
+2015-06-29: TEST --> fixed"
+100012,10001,120,"fixed_sensor","Japan","Fukushima-ken, Matsukawa-machi, #2","LND 7128","GM_tube","37.6590 140.4590","2015-06-28: TEST
 2015-06-29: TEST --> fixed
 2015-08-13: changed number to #2
-2015-09-08: fixed QTH",,10001
-100011,0.002994012,334,fixed_sensor,ID: 100011,Japan,"Fukushima-ken, Matsukawa-machi, #1",LND 73126,GM_tube,37.6590 140.4590,2015,,,large_red,,http://gamma.tar.bz/nGeigies/100011_small.png,sensor data,320,200,"2015-06-28: TEST
+2015-09-08: fixed QTH"
+100011,10001,334,"fixed_sensor","Japan","Fukushima-ken, Matsukawa-machi, #1","LND 73126","GM_tube","37.6590 140.4590","2015-06-28: TEST
 2015-06-29: TEST --> fixed
-2015-09-08: fixed QTH",,10001
-100021,0.008333334,120,fixed_sensor,ID: 100021,Japan,"Tokyo-to, Minato-ku, Roppongi, #2",LND 7128,GM_tube,35.659491 139.72785,2015,,,large_purple,,http://gamma.tar.bz/nGeigies/100021_small.png,sensor data,320,200,"2015-08-11: TEST
-2015-08-31: TEST -> fixed; changed sensor; fixed numbering",,10002
-100022,0.002994012,334,fixed_sensor,ID: 100022,Japan,"Tokyo-to, Minato-ku, Roppongi, #1",LND 73126,GM_tube,35.659491 139.72785,2015,,,large_red,,http://gamma.tar.bz/nGeigies/100022_small.png,sensor data,320,200,"2015-08-11: TEST
-2015-08-31: TEST -> fixed; changed sensor; fixed numbering",,10002
-200051,0.002994012,334,TEST_sensor,ID: 200051,USA,"CA, Sebastopol, International Medcom #1",LND 73126,GM_tube,38.4037 -122.818386,2015,,,large_red,,http://gamma.tar.bz/nGeigies/200051_small.png,sensor data,320,200,"2015-08-13: TEST
+2015-09-08: fixed QTH"
+100021,10002,120,"fixed_sensor","Japan","Tokyo-to, Minato-ku, Roppongi, #2","LND 7128","GM_tube","35.659491 139.72785","2015-08-11: TEST
+2015-08-31: TEST -> fixed; changed sensor; fixed numbering"
+100022,10002,334,"fixed_sensor","Japan","Tokyo-to, Minato-ku, Roppongi, #1","LND 73126","GM_tube","35.659491 139.72785","2015-08-11: TEST
+2015-08-31: TEST -> fixed; changed sensor; fixed numbering"
+200051,20005,334,"TEST_sensor","USA","CA, Sebastopol, International Medcom #1","LND 73126","GM_tube","38.4037 -122.818386","2015-08-13: TEST
 2015-08-31: TEST -> fixed; changed sensor
-2015-09-20: ->TEST due to huge values",,20005
-200052,0.008333334,120,TEST_sensor,ID: 200052,USA,"CA, Sebastopol, International Medcom #2",LND 712,GM_tube,38.4037 -122.818386,2015,,,large_purple,,http://gamma.tar.bz/nGeigies/200052_small.png,sensor data,320,200,"2015-08-13: TEST
+2015-09-20: ->TEST due to huge values"
+200052,20005,120,"TEST_sensor","USA","CA, Sebastopol, International Medcom #2","LND 712","GM_tube","38.4037 -122.818386","2015-08-13: TEST
 2015-08-31: TEST -> fixed; changed sensor
-2015-09-20: ->TEST due to huge values",,20005
-132,0.002994012,334,TEST_sensor,ID: 132,Japan,"Tokyo-to, Minato-ku, Mita",LND 7313,GM_tube,35.6431981 139.7397488,2015,,,large_red,,http://gamma.tar.bz/nGeigies/132_small.png,sensor data,320,200,2015-08-26: new TEST sensor; Onyx+Wizkers,,
-100091,0.002994012,334,fixed_sensor,ID: 100091,Japan,"Fukushima-ken, Tomioka-shi #1",LND 73126,GM_tube,37.32925 140.978431,2015,,,large_red,,http://gamma.tar.bz/nGeigies/100091_small.png,sensor data,320,200,"2015-08-31: TEST
-2015-09-09: TEST -> fixed",,10009
-100092,0.008333334,120,fixed_sensor,ID: 100092,Japan,"Fukushima-ken, Tomioka-shi #2",LND 7128,GM_tube,37.32925 140.978431,2015,,,large_purple,,http://gamma.tar.bz/nGeigies/100092_small.png,sensor data,320,200,"2015-08-31: TEST
+2015-09-20: ->TEST due to huge values"
+132,,334,"TEST_sensor","Japan","Tokyo-to, Minato-ku, Mita","LND 7313","GM_tube","35.6431981 139.7397488","2015-08-26: new TEST sensor; Onyx+Wizkers"
+100091,10009,334,"fixed_sensor","Japan","Fukushima-ken, Tomioka-shi #1","LND 73126","GM_tube","37.32925 140.978431","2015-08-31: TEST
+2015-09-09: TEST -> fixed"
+100092,10009,120,"fixed_sensor","Japan","Fukushima-ken, Tomioka-shi #2","LND 7128","GM_tube","37.32925 140.978431","2015-08-31: TEST
 2015-08-31: fixed numbering
-2015-09-09: TEST -> fixed",,10009
-100101,0.002994012,334,TEST_sensor,ID: 100101,Japan,"Fukushima-ken, Iwaki-shi #1",LND 73126,GM_tube,37.0105 140.9253,2015,,,large_red,,http://gamma.tar.bz/nGeigies/100101_small.png,sensor data,320,200,2015-10-07: TEST,,10010
-100102,0.008333334,120,TEST_sensor,ID: 100102,Japan,"Fukushima-ken, Iwaki-shi #2",LND 7128,GM_tube,37.0105 140.9253,2015,,,large_purple,,http://gamma.tar.bz/nGeigies/100102_small.png,sensor data,320,200,2015-10-07: TEST,,10010
+2015-09-09: TEST -> fixed"
+100101,10010,334,"TEST_sensor","Japan","Fukushima-ken, Iwaki-shi #1","LND 73126","GM_tube","37.0105 140.9253","2015-10-07: TEST"
+100102,10010,120,"TEST_sensor","Japan","Fukushima-ken, Iwaki-shi #2","LND 7128","GM_tube","37.0105 140.9253","2015-10-07: TEST"

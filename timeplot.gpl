@@ -2,9 +2,10 @@
 reset;
 set encoding utf8;
 
-LABEL=system("cat in/nGeigie_map.csv|cut -d, -f1-10|grep -P '^" . ID . ",' |perl -MText::ParseWords -CS -ne '@R=&quotewords(\",\", 0, $_); print \"$R[5], $R[6]\n\"'");
-CPM2DRE=system("cat in/nGeigie_map.csv|cut -d, -f1,2|grep -P '^" . ID . ",' |cut -d, -f2");
-CPM2DRE=CPM2DRE + 0.0;
+LABEL=system("cat in/nGeigie_map.csv|cut -d, -f1-10|grep -P '^" . ID . ",' |perl -MText::ParseWords -CS -ne '@R=&quotewords(\",\", 0, $_); print \"$R[4], $R[5]\n\"'");
+DRE2CPM=system("cat in/nGeigie_map.csv|cut -d, -f1,3|grep -P '^" . ID . ",' |cut -d, -f2");
+DRE2CPM=DRE2CPM + 0.0;
+CPM2DRE=1.0 / DRE2CPM;
 DATAFILE=sprintf("cache/%d.csv", ID);
 OUTFILE=sprintf("out/%d.png", ID);
 OUTFILE_window=sprintf("out/%d_window.png", ID);
