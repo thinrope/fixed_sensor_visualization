@@ -6,7 +6,7 @@
 54,,120,"fixed_sensor","Switzerland","Lausanne","LND 712","GM_tube","46.524491 6.630666","2014-11-10: moved to new QTH"
 58,,334,"DEAD_sensor","USA","DC, NRCD","LND 7313","GM_tube","38.904927 -77.03476",
 59,,334,"fixed_sensor","USA","MA, Boston, MIT","LND 7313","GM_tube","42.360781 -71.087719",
-60,,334,"fixed_sensor","USA","CA, Sebastopol","LND 7313","GM_tube","38.4037 -122.818386","2015-08-31: updated QTH"
+60,,334,"DEAD_sensor","USA","CA, Sebastopol","LND 7313","GM_tube","38.4037 -122.818386","2015-08-31: updated QTH; 2015-10-26: ->DEAD"
 61,,334,"fixed_sensor","USA","CA, Los Angeles, Griffith Park","LND 7313","GM_tube","34.121726 -118.269582","2015-08-31: fixed wrong LOC"
 62,,334,"DEAD_sensor","Japan","Tokyo-to, Shibuya-ku, Safecast office","LND 7313","GM_tube","35.6564 139.6954","2015-02-18 resurrected feed
 2015-03-08 moved to TESTING, people constantly playing with sources apparently"
