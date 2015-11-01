@@ -16,8 +16,9 @@ SYNC_CMD2 := wget -q 'http://realtime.safecast.org/wp-content/uploads/devices.js
 SYNC2 := $(shell [[ ! -e cache/devices.json || -n `find cache/devices.json $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD2) 2>/dev/null )
 LIVE_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4|fgrep fixed_sensor|cut -d, -f1|sort -n|xargs echo)
 TEST_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4|fgrep TEST_sensor|cut -d, -f1|sort -n|xargs echo)
+DEAD_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4|fgrep DEAD_sensor|cut -d, -f1|sort -n|xargs echo)
 REGISTERED_SENSORS := $(shell cat cache/devices.json | perl -ne 'print "$$1 " while (/\"id":"(\d+)"/g)')
-DEAD_SENSORS := $(shell for s in $(REGISTERED_SENSORS); do echo $(LIVE_SENSORS) $(TEST_SENSORS)|grep -q $$s || echo $$s; done |xargs echo)
+UNREGISTERED_SENSORS := $(shell for s in $(REGISTERED_SENSORS); do echo $(LIVE_SENSORS) $(TEST_SENSORS)|grep -q $$s || echo $$s; done |xargs echo)
 
 GNUPLOT_VARS := \
 	CONFIG_WIDTH_SMALL=$(CONFIG_WIDTH_SMALL); CONFIG_WIDTH_BIG=$(CONFIG_WIDTH_BIG); CONFIG_WIDTH_ALL=$(CONFIG_WIDTH_ALL); \
@@ -40,8 +41,8 @@ publish:	crush
 
 nodata:	out/
 	# FIXME: This is a HACK and will break!
-	@echo "Hack around sensors with no data ($(DEAD_SENSORS))..."
-	$(shell for s in $(DEAD_SENSORS); do gnuplot -e "ID=$$s; $(GNUPLOT_VARS)" ./nodata.gpl; done )
+	@echo "Hack around sensors with no data ($(UNREGISTERED_SENSORS) $(DEAD_SENSORS))..."
+	$(shell for s in $(UNREGISTERED_SENSORS) $(DEAD_SENSORS); do gnuplot -e "ID=$$s; $(GNUPLOT_VARS)" ./nodata.gpl; done )
 
 crush:	out nodata
 	@echo "Crushing PNGs..."
@@ -129,8 +130,9 @@ test:
 	@echo "Current version: $(VERSION)$(SOURCE_STATUS)"
 	@echo -e "LIVE: $(LIVE_SENSORS)"
 	@echo -e "TEST: $(TEST_SENSORS)"
+	@echo -e "DEAD: $(DEAD_SENSORS)"
 	@echo -e "REGISTERED: $(REGISTERED_SENSORS)"
-	@echo -e "DEAD_SENSORS: $(DEAD_SENSORS)  <-- hack"
+	@echo -e "UNREGISTERED_SENSORS: $(UNREGISTERED_SENSORS)  <-- hack"
 	@echo "$(GNUPLOT_VARS)"
 
 clean:
