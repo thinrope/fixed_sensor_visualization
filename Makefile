@@ -14,11 +14,16 @@ EXPIRE_CACHE := $(shell [[ ! -e cache/.run || -n `find cache/.run $(MAX_AGE_TO_C
 
 SYNC_CMD2 := wget -q 'http://realtime.safecast.org/wp-content/uploads/devices.json' -O cache/devices.json
 SYNC2 := $(shell [[ ! -e cache/devices.json || -n `find cache/devices.json $(MAX_AGE_TO_CACHE) 2>/dev/null` ]] && $(SYNC_CMD2) 2>/dev/null )
-LIVE_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4|fgrep fixed_sensor|cut -d, -f1|sort -n|xargs echo)
-TEST_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4|fgrep TEST_sensor|cut -d, -f1|sort -n|xargs echo)
-DEAD_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4|fgrep DEAD_sensor|cut -d, -f1|sort -n|xargs echo)
-REGISTERED_SENSORS := $(shell cat cache/devices.json | perl -ne 'print "$$1 " while (/\"id":"(\d+)"/g)')
-UNREGISTERED_SENSORS := $(shell for s in $(REGISTERED_SENSORS); do echo $(LIVE_SENSORS) $(TEST_SENSORS)|grep -q $$s || echo $$s; done |xargs echo)
+
+LIVE_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4 |fgrep fixed_sensor |cut -d, -f1 |sort -n |xargs echo)
+TEST_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4 |fgrep TEST_sensor  |cut -d, -f1 |sort -n |xargs echo)
+DEAD_SENSORS ?= $(shell cat in/nGeigie_map.csv |cut -d, -f1,4 |fgrep DEAD_sensor  |cut -d, -f1 |sort -n |xargs echo)
+KNOWN_SENSORS := $(shell for s in $(LIVE_SENSORS) $(TEST_SENSORS) $(DEAD_SENSORS); do echo $$s; done |sort -n |xargs echo)
+
+RSO_SENSORS := $(shell cat cache/devices.json |perl -ne 'print "$$1\n" while (/\"id":"(\d+)"/g)' |sort -n |xargs echo)
+NODATA_SENSORS := $(shell for s in $(DEAD_SENSORS) $(RSO_SENSORS); do echo "$(LIVE_SENSORS) $(TEST_SENSORS)" |fgrep -w -q $$s || echo $$s; done |xargs echo)
+
+NEVERBEFOREHEARD_SENSORS := $(shell for s in $(RSO_SENSORS); do echo "$(KNOWN_SENSORS)" |fgrep -w -q $$s || echo $$s; done |sort -n  >tmp/to_add; cat tmp/to_add |xargs echo)
 
 GNUPLOT_VARS := \
 	CONFIG_WIDTH_SMALL=$(CONFIG_WIDTH_SMALL); CONFIG_WIDTH_BIG=$(CONFIG_WIDTH_BIG); CONFIG_WIDTH_ALL=$(CONFIG_WIDTH_ALL); \
@@ -27,7 +32,7 @@ GNUPLOT_VARS := \
 
 .INTERMEDIATE:	cache/%.csv daily/%.csv
 .PRECIOUS:	cache/%.csv daily/%.csv
-.PHONY:		clean distclean mrproper all expire cache out daily publish view printvars bootstrap
+.PHONY:		clean distclean mrproper all expire cache out daily publish view printvars bootstrap test print_current_online
 all:	out nodata	| bootstrap
 
 bootstrap:	cache/devices.json
@@ -40,9 +45,9 @@ publish:	crush
 	@$(PUBLISH_CMD)
 
 nodata:	out/
-	# FIXME: This is a HACK and will break!
-	@echo "Hack around sensors with no data ($(UNREGISTERED_SENSORS) $(DEAD_SENSORS))..."
-	$(shell for s in $(UNREGISTERED_SENSORS) $(DEAD_SENSORS); do gnuplot -e "ID=$$s; $(GNUPLOT_VARS)" ./nodata.gpl; done )
+	# FIXME: This is a HACK, slightly improved...
+	@echo "Hack around sensors with no data ($(NODATA_SENSORS))..."
+	$(shell for s in $(NODATA_SENSORS); do gnuplot -e "ID=$$s; $(GNUPLOT_VARS)" ./nodata.gpl; done )
 
 crush:	out nodata
 	@echo "Crushing PNGs..."
@@ -124,6 +129,13 @@ daily/%.png:	daily/%.csv $(CONFIG) timeplot_daily.gpl | daily/
 	@gnuplot -e 'reset; set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,8" size 800, 600 background "#ffffef"; set output "$@"; set datafile separator ","; set xrange [-0.5:24.5]; set xtics 0 3; set grid; set format x "%02.0f"; plot "$<" u ($$1+0.5):2 w lines lw 3 title "daily average CPM (per hour)", "" u ($$1+0.5):2:3 w yerrorbars title "3σ";'
 	@echo -e "\t$@ plotted."
 
+print_current_online:	cache/devices.json
+	@{ \
+		cat $< | \
+		perl -ne 'print join("|", $$+{id},"$$+{lat} $$+{lon}",$$+{location},$$+{last_updated}),"\n" while (/"id":"(?<id>[0-9]+)","lat":"(?<lat>[\+\-0-9.]+)","lon":"(?<lon>[\+\-0-9.]+)","location":"(?<location>[^"]+)","updated":"(?<last_updated>\d\d\d\d-\d\d-\d\dT\d\d\:\d\d\:\d\dZ)"/g)' | \
+		fgrep $$(TZ=Z date +%FT --date '1 hour ago') | \
+		sort -n|column -s"|" -t; \
+	}
 
 test:
 	@echo "It is $(NOW) in $(CONFIG_TIMEZONE)."
@@ -131,9 +143,23 @@ test:
 	@echo -e "LIVE: $(LIVE_SENSORS)"
 	@echo -e "TEST: $(TEST_SENSORS)"
 	@echo -e "DEAD: $(DEAD_SENSORS)"
-	@echo -e "REGISTERED: $(REGISTERED_SENSORS)"
-	@echo -e "UNREGISTERED_SENSORS: $(UNREGISTERED_SENSORS)  <-- hack"
-	@echo "$(GNUPLOT_VARS)"
+	@echo -e "KNOWN: $(KNOWN_SENSORS)"
+	@echo
+	@echo -e "RSO: $(RSO_SENSORS)"
+	@echo -e "NODATA_SENSORS: $(NODATA_SENSORS)  <-- hack"
+	@echo
+	@echo -e "NEVERBEFOREHEARD_SENSORS: $(NEVERBEFOREHEARD_SENSORS) <-- those may need to be added to in/nGeigie_map.csv"
+	@echo "Currently the following has updated recently (=live)"
+	@echo
+	@{ \
+		cat cache/devices.json | \
+		perl -ne 'print join("|", $$+{id},"$$+{lat} $$+{lon}",$$+{location},$$+{last_updated}),"\n" while (/"id":"(?<id>[0-9]+)","lat":"(?<lat>[\+\-0-9.]+)","lon":"(?<lon>[\+\-0-9.]+)","location":"(?<location>[^"]+)","updated":"(?<last_updated>\d\d\d\d-\d\d-\d\dT\d\d\:\d\d\:\d\dZ)"/g)' | \
+		fgrep $$(TZ=Z date +%FT --date '1 hour ago') | \
+		fgrep -w -f tmp/to_add | \
+		sort -n|column -s"|" -t; \
+	}
+	@echo
+	@echo -e "GNUPLOT_VARS: $(GNUPLOT_VARS)"
 
 clean:
 	@rm -rf cache/* tmp/* daily/*
