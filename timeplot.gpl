@@ -100,7 +100,7 @@ set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph
 set grid x y;
 set format x "%m/%d"; set xtics offset 0, graph 0.03; set xlabel END_YEAR offset 0,1;
 # add sensor ID within the graph
-set label 40 sprintf("%d", ID) at graph 0.5, graph 0.75 center font FONT . ",100" back textcolor rgb "#dddddd";
+set label 40 sprintf("%d", ID) at graph 0.5, graph 0.5 center font FONT . ",100" back textcolor rgb "#dddddd";
 plot \
 	DATAFILE u 1:($4*CPM2DRE):($4*CPM2DRE) w l lw 1 palette notitle;
 
