@@ -130,6 +130,13 @@ daily/%.png:	daily/%.csv $(CONFIG) timeplot_daily.gpl | daily/
 	@gnuplot -e 'reset; set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,8" size 800, 600 background "#ffffef"; set output "$@"; set datafile separator ","; set xrange [-0.5:24.5]; set xtics 0 3; set grid; set format x "%02.0f"; plot "$<" u ($$1+0.5):2 w lines lw 3 title "daily average CPM (per hour)", "" u ($$1+0.5):2:3 w yerrorbars title "3σ";'
 	@echo -e "\t$@ plotted."
 
+print_devices:	cache/devices.json
+	@{ \
+		cat $< | \
+		perl -ne 'print join("|", $$+{id},"$$+{lat} $$+{lon}",$$+{location},$$+{last_updated}),"\n" while (/"id":"(?<id>[0-9]+)","lat":"(?<lat>[\+\-0-9.]+)","lon":"(?<lon>[\+\-0-9.]+)","location":"(?<location>[^"]+)","updated":"(?<last_updated>\d\d\d\d-\d\d-\d\dT\d\d\:\d\d\:\d\dZ)"/g)' | \
+		sort -n|column -s"|" -t; \
+	}
+
 print_current_online:	cache/devices.json
 	@{ \
 		cat $< | \
