@@ -47,6 +47,28 @@ set arrow 2 nohead front from graph 1, graph 0 to graph 1, graph 1 lc rgb "blue"
 set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
 set format y "% 0.0f"; set format y2 "%0.2f";
 
+# Huge PNGs for gamma.tar.bz
+FONT="Arial Unicode MS";
+set term png enhanced transparent nointerlace truecolor butt font FONT . ",12" size CONFIG_WIDTH_HUGE, CONFIG_HEIGHT_HUGE;
+set output sprintf("out/%d_%dx%d.png", ID, CONFIG_WIDTH_HUGE, CONFIG_HEIGHT_HUGE);
+
+set object 51 rectangle from "2013-01-01", STATS_mean_y - 3*STATS_stddev_y to "2033-01-01", STATS_mean_y + 3*STATS_stddev_y back fc rgb "cyan" fillstyle solid 0.2 border lc rgb "cyan";
+set title sprintf("&{%0.2f±%0.2f μSv/h (%0.1f±%0.1f CPM), total %d measurements}",	STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) font FONT . ",12";
+set label 51 sprintf("%0.2f±%0.2f μSv/h &{(%0.1f±%0.1f CPM), total %d measurements}",	STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) at screen 0.5, screen 0.97 center font FONT . ",12" tc rgb "blue";
+set label 52 sprintf("&{%0.2f±%0.2f μSv/h (}%0.1f±%0.1f CPM&{), total %d measurements}",	STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) at screen 0.5, screen 0.97 center font FONT . ",12" tc rgb "dark-green";
+set label 53 sprintf("&{%0.2f±%0.2f μSv/h }(&{%0.1f±%0.1f CPM}), total %d measurements",	STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE, STATS_mean_y, 3*STATS_stddev_y, STATS_records) at screen 0.5, screen 0.97 center font FONT . ",12" tc rgb "black";
+
+set label 54 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0235, graph 0.970 font FONT . ",18" textcolor rgb "dark-gray";
+set label 55 sprintf("%d:  %0.2f μSv/h", ID, STATS_mean_y * CPM2DRE) at graph 0.0240, graph 0.968 font FONT . ",18" textcolor rgb "#FF0066";
+set label 56 LABEL at graph 0.0240, graph 0.94 font FONT . ",18" noenhanced textcolor rgb "#FF0066";
+set style line 1 lc rgb "orange";
+plot \
+	DATAFILE u 1:2 w p ls 1 notitle, \
+	DATAFILE u 1:($4*CPM2DRE):($4*CPM2DRE) axes x1y2 w l lw 2 palette title "24-bin SMA [= 2 h ]", \
+	DATAFILE u 1:($3*CPM2DRE):($3*CPM2DRE) axes x1y2 w l lw 1 lc rgbcolor "#000000" notitle, \
+	-100 w filledcurves fc rgb "cyan" fs transparent solid 0.2 title "±3{/Arial-Unicode-MS σ} area [= " . three_sigma_percent . " ]";
+unset for [i in "51"] object i; unset for [i in "51 52 53 54 55 56"] label i; unset title;
+
 # Large PNGs for gamma.tar.bz
 FONT="Arial Unicode MS";
 set term png enhanced notransparent nointerlace truecolor butt font FONT . ",8" size CONFIG_WIDTH_BIG, CONFIG_HEIGHT_BIG background "#ffffef";
