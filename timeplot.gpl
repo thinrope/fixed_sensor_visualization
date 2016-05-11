@@ -118,7 +118,7 @@ set output sprintf("out/%d_%dx%d.png", ID, WIDTH, HEIGHT);
 
 uSv_h = sprintf("%0.2f ± %0.2f", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
 set title sprintf("%s μSv/h (%0.1f ± %0.1f CPM)", uSv_h, STATS_mean_y, 3*STATS_stddev_y) font FONT . ",18";
-set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.1f";
+set yrange [-0.1: +1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.1f";
 set grid x y;
 set format x "%m/%d"; set xtics offset 0, graph 0.03; set xlabel END_YEAR offset 0,1;
 # add sensor ID within the graph

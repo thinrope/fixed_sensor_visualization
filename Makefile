@@ -96,6 +96,29 @@ out/TEST.png:	$(TEST_SENSORS:%=out/%.png) timeplot_all.gpl ${CONFIG} | out/ tmp/
 out/tilemap.png:	in/tilemap.png ${CONFIG} | out/
 	@cp -a $< $@
 
+dual:	out/10001_dual.png out/10002_dual.png out/10007_dual.png out/10008_dual.png out/10013_dual.png out/10017_dual.png out/10020_dual.png out/10023_dual.png out/20002_dual.png out/20101_dual.png
+
+out/10001_dual.png:	out/100011_640x400.png out/100012_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/10002_dual.png:	out/100021_640x400.png out/100022_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/10007_dual.png:	out/100071_640x400.png out/100072_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/10008_dual.png:	out/100081_640x400.png out/100082_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/10013_dual.png:	out/100131_640x400.png out/100132_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/10017_dual.png:	out/100171_640x400.png out/100172_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/10020_dual.png:	out/100201_640x400.png out/100202_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/10023_dual.png:	out/100231_640x400.png out/100232_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/20002_dual.png:	out/200021_640x400.png out/200022_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+out/20101_dual.png:	out/201011_640x400.png out/201012_640x400.png
+	@convert \( $(word 1,$^) -crop +0+78 +repage -crop +0-55 +repage \) \( $(word 1,$^) -crop +0+81 +repage \) -append -geometry 100%% $@
+
 out/index.html:	in/index.header in/index.footer $(LIVE_SENSORS:%=out/%.png) out/LIVE.png ${CONFIG} | out/
 	@echo "Compiling $@ ..."
 	@{ \
@@ -160,7 +183,7 @@ test:
 	@echo -e "NODATA_SENSORS: $(NODATA_SENSORS)  <-- hack"
 	@echo
 	@echo -e "NEVERBEFOREHEARD_SENSORS: $(NEVERBEFOREHEARD_SENSORS) <-- those may need to be added to in/nGeigie_map.csv"
-	@echo "Currently the following has updated recently (=live)"
+	@echo "From the above, currently the following has updated recently (=live)"
 	@echo
 	@{ \
 		cat cache/devices.json | \
@@ -171,6 +194,10 @@ test:
 	}
 	@echo
 	@echo -e "GNUPLOT_VARS: $(GNUPLOT_VARS)"
+	@echo
+	@echo -e "Statsions with live dual sensors:"
+	@{ cat in/nGeigie_map.csv |grep -P ',"(TEST|fixed)_sensor",'|cut -d, -f2|suc|grep -P "\d{5},2"|cut -d, -f1; }
+	@echo
 
 clean:
 	@rm -rf cache/* tmp/* daily/*
