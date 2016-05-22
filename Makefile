@@ -25,6 +25,7 @@ RSO_SENSORS := $(shell cat cache/devices.json |perl -ne 'print "$$1\n" while (/\
 NODATA_SENSORS := $(shell for s in $(DEAD_SENSORS) $(RSO_SENSORS); do echo "$(LIVE_SENSORS) $(TEST_SENSORS)" |fgrep -w -q $$s || echo $$s; done |xargs echo)
 
 NEVERBEFOREHEARD_SENSORS := $(shell for s in $(RSO_SENSORS); do echo "$(KNOWN_SENSORS)" |fgrep -w -q $$s || echo $$s; done |sort -n  >tmp/to_add; cat tmp/to_add |xargs echo)
+RESURRECTED_SENSORS := $(shell for s in $(RSO_SENSORS); do echo "$(DEAD_SENSORS)" |fgrep -w -q $$s && echo $$s; done |sort -n  >tmp/resurrected; cat tmp/resurrected |xargs echo)
 
 GNUPLOT_VARS := \
 	CONFIG_WIDTH_SMALL=$(CONFIG_WIDTH_SMALL); CONFIG_HEIGHT_SMALL=$(CONFIG_HEIGHT_SMALL); \
@@ -190,6 +191,16 @@ test:
 		perl -ne 'print join("|", $$+{id},"$$+{lat} $$+{lon}",$$+{location},$$+{last_updated}),"\n" while (/"id":"(?<id>[0-9]+)","lat":"(?<lat>[\+\-0-9.]+)","lon":"(?<lon>[\+\-0-9.]+)","location":"(?<location>[^"]+)","updated":"(?<last_updated>\d\d\d\d-\d\d-\d\dT\d\d\:\d\d\:\d\dZ)"/g)' | \
 		fgrep $$(TZ=Z date +%FT --date '1 hour ago') | \
 		fgrep -w -f tmp/to_add | \
+		sort -n|column -s"|" -t; \
+	}
+	@echo
+	@echo "Those sensors are marked as DEAD, though they sent data recently... <-- those may need to be moved to TEST in in/nGeigie_map.csv"
+	@echo
+	@{ \
+		cat cache/devices.json | \
+		perl -ne 'print join("|", $$+{id},"$$+{lat} $$+{lon}",$$+{location},$$+{last_updated}),"\n" while (/"id":"(?<id>[0-9]+)","lat":"(?<lat>[\+\-0-9.]+)","lon":"(?<lon>[\+\-0-9.]+)","location":"(?<location>[^"]+)","updated":"(?<last_updated>\d\d\d\d-\d\d-\d\dT\d\d\:\d\d\:\d\dZ)"/g)' | \
+		fgrep $$(TZ=Z date +%FT --date '1 hour ago') | \
+		fgrep -w -f tmp/resurrected | \
 		sort -n|column -s"|" -t; \
 	}
 	@echo
