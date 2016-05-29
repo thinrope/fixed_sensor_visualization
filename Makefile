@@ -43,7 +43,7 @@ all:	out nodata	| bootstrap
 bootstrap:	cache/devices.json
 cache:	$(LIVE_SENSORS:%=cache/%.csv) $(TEST_SENSORS:%=cache/%.csv) | bootstrap
 out:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=out/%.png) out/LIVE.png out/TEST.png out/index.html out/window.html out/TEST.html out/WINDOW.html out/tilemap.png	| cache out/
-daily:	$(TEST_SENSORS:%=daily/%.png)	| cache daily/
+daily:	$(LIVE_SENSORS:%=out/%.png) $(TEST_SENSORS:%=daily/%.png) | cache daily/
 
 
 publish:	crush
@@ -161,9 +161,9 @@ daily/%.csv:	cache/%.csv $(CONFIG) | daily/
 	@cat $< |perl -MStatistics::Descriptive  -e 'while (<>){ m#\d{4}-\d{2}-\d{2}T(\d{2}):\d{2}:\d{2}JST,([0-9.]+)#; $$A{$$1}=Statistics::Descriptive::Sparse->new() unless (defined $$A{$$1}); $$A{$$1}->add_data($$2);} print map {sprintf("%s,%0.3f,%0.3f,%d\n", $$_, $$A{$$_}->mean(), 3.0 * $$A{$$_}->standard_deviation(),$$A{$$_}->count())} sort keys %A;' >$@
 	@echo -e "\t$@ done."
 
-daily/%.png:	daily/%.csv $(CONFIG) timeplot_daily.gpl | daily/
+daily/%.png:	daily/%.csv $(CONFIG) | daily/
 	@echo "Plotting $@ ..."
-	@gnuplot -e 'reset; set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,8" size 800, 600 background "#ffffef"; set output "$@"; set datafile separator ","; set xrange [-0.5:24.5]; set xtics 0 3; set grid; set format x "%02.0f"; plot "$<" u ($$1+0.5):2 w lines lw 3 title "daily average CPM (per hour)", "" u ($$1+0.5):2:3 w yerrorbars title "3σ";'
+	@gnuplot -e 'reset; set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,8" size 800, 600 background "#ffffef"; set output "$@"; set datafile separator ","; set xrange [-0.5:24.5]; set grid; set format x "%02.0f"; plot "$<" u ($$1+0.5):2 w lines lw 3 title "daily average CPM (per hour)", "" u ($$1+0.5):2:3 w yerrorbars title "3σ";'
 	@echo -e "\t$@ plotted."
 
 print_devices:	cache/devices.json
