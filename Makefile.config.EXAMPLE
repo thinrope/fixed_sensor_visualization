@@ -1,5 +1,3 @@
-# sensor list is fetched from the Fusion tables
-
 # SMA smoothing related, in bins
 CONFIG_SMA1 := 288
 CONFIG_SMA2 := 24
@@ -13,17 +11,17 @@ PLOT_FROM ?= '30 days ago'
 PLOT_TO ?= 'now'
 
 # in px
-CONFIG_WIDTH_SMALL := 640
-CONFIG_HEIGHT_SMALL := 400
+CONFIG_WIDTH_SMALL ?= 640
+CONFIG_HEIGHT_SMALL ?= 400
 
-CONFIG_WIDTH_BIG := 450
-CONFIG_HEIGHT_BIG := 300
+CONFIG_WIDTH_BIG ?= 450
+CONFIG_HEIGHT_BIG ?= 300
 
-CONFIG_WIDTH_HUGE := 1920
-CONFIG_HEIGHT_HUGE := 1080
+CONFIG_WIDTH_HUGE ?= 1920
+CONFIG_HEIGHT_HUGE ?= 1080
 
-CONFIG_WIDTH_ALL := 900
-CONFIG_HEIGHT_ALL := 400
+CONFIG_WIDTH_ALL ?= 900
+CONFIG_HEIGHT_ALL ?= 460
 
 # long and short version of graph timezone (server local TZ does NOT matter)
 CONFIG_TIMEZONE := 'Asia/Tokyo'
