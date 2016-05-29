@@ -3,17 +3,18 @@ unset multiplot; reset; clear;
 set encoding utf8;
 
 set term qt enh font "Arial Unicode MS,9";
-set term png enha truecolor font "Arial Unicode MS,9" size 1600,1200; set out "fitting.png";
+set term png enhanced truecolor font "Arial Unicode MS,9" size 1920,1200 background "#f0f0f0"; set out "LUT.png";
 set print "tmp/parameters.gpl";
 
 set datafile separator ",";
 set key top left;
 AX="10.5 61 172 400 942 3102 22937.25"; AY="#000000 #0000FF #00FFFF #FF00FF #FF0000 #FFFF00 #FFFFFF";
 print 'AX="10.5 61 172 400 942 3102 22937.25"; AY="#000000 #0000FF #00FFFF #FF00FF #FF0000 #FFFF00 #FFFFFF";';
-set for [i=1:words(AX)] object word(AX,i)+0 rectangle center word(AX, i)+0,0.76 size 1.3,0.12 fc rgb "black" fillstyle solid 0.25 noborder;
-set for [i=1:words(AX)] label word(AX,i)+0 sprintf("point %d\n@ %s\n%s",i,word(AX,i), word(AY,i)) at word(AX,i),0.8 center textcolor rgb word(AY,i);
+set for [i=1:words(AX)] object word(AX,i)+0.0 rectangle center word(AX, i)+0,0.76 size 1.4,0.12 fc rgb "black" fillstyle solid 0.45 noborder;
+set for [i=1:words(AX)] label i sprintf("point %d\n@ %s\n%s",i,word(AX,i), word(AY,i)) at word(AX,i),0.8 center textcolor rgb word(AY,i);
 set for [i=1:words(AX)] arrow word(AX, i) from word(AX, i),0.66 to word(AX, i),0.2 lw 3 lc rgb word(AY,i);
 
+set offsets 0.1, 0.1, 0, 0;
 set log x; set xrange [word(AX,1)+0:word(AX,7)+0]; set yrange [-0.1:1.1];
 
 set size 1.0, 1.0; set origin 0.0, 0.0; set multiplot;
