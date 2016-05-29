@@ -129,6 +129,7 @@ unset for [i in "31 32 40"] label i; unset xlabel;
 
 # save uSv/h data for ALL.png
 set format x "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format y "%0.3f";
+uSv_h = sprintf("%0.2f ± %0.2f", STATS_mean_y * CPM2DRE , 3*STATS_stddev_y * CPM2DRE);
 set table TABLE;
 plot DATAFILE u 1:($4*CPM2DRE) title sprintf("%d: %s [%.3E]", ID, uSv_h, CPM2DRE);
 unset table;
