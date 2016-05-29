@@ -4,7 +4,7 @@ set encoding utf8;
 
 NOW=system("TZ=" . CONFIG_TIMEZONE . " date +%FT%T" . CONFIG_TZ);
 set lmargin at screen 0.33;
-set key on outside left vertical Right opaque noreverse samplen 1.0 spacing 0.95 height 0.9 title "      ID: μSv/h ± 3σ (%) [@DRE2CPM]" noenhanced nobox maxcols 1 maxrows 50;
+set key on outside left vertical Right opaque noreverse samplen 1.0 spacing 0.90 height 0.9 title "         ID: μSv/h ± 3σ (3σ%) [@DRE2CPM]" noenhanced nobox maxcols 1 maxrows 50;
 set grid x y2 front; 
 S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_START);
 S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_END);
