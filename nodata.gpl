@@ -21,13 +21,13 @@ set output OUTFILE_small;
 
 unset title;
 unset ytics; unset y2tics;
-set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.2f";
+set yrange [-0.1:+1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.2f";
 set grid x y;
 set format x "%m/%d"; set xtics offset 0, graph 0.03; set label 32 END_YEAR at graph 0.5, graph -0.17 center;
 
 plot \
 	-1 w l notitle;
-unset title; unset for [i in "31 32"] label i;
+unset for [i in "31 32"] label i;
 
 
 # small PNGs for Fusion tables @2x res
@@ -37,7 +37,7 @@ set term pngcairo enhanced color solid notransparent background "#ffffff" font F
 set output sprintf("out/%d_%dx%d.png", ID, WIDTH, HEIGHT);
 
 unset title;
-set yrange [-0.1: +1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.2f";
+set yrange [-0.1:+1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.2f";
 set grid x y;
 set format x "%m/%d"; set xtics offset 0, graph 0.03; set xlabel END_YEAR offset 0,1;
 # add sensor ID within the graph
@@ -45,5 +45,5 @@ set label 40 sprintf("%d", ID) at graph 0.5, graph 0.5 center font FONT . ",100"
 plot \
 	-1 w l notitle;
 
-unset title; unset for [i in "31 32 40"] label i; unset xlabel;
+unset for [i in "31 32 40"] label i; unset xlabel;
 
