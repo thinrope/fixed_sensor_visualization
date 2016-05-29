@@ -1,29 +1,29 @@
-#!/usr/bin/gnuplot
+#!/usr/bin/gnuplot -persist
 reset;
 set encoding utf8;
-ID=42;
+ID=100022;
 CONFIG_TZ="JST";
 
-DATAFILE=sprintf("<(cat cache/%d.csv| perl -pe 's/T/,/')", ID);
+qCOMMA='","';
+DAYSPLITTER="perl -e 'while(<>){/^(.+?),/; print " . '"\n"' . " if ($last ne $1); $last=$1; print;}'";
+DATAFILE=sprintf("<(cat cache/%d.csv| perl -ne '@R=split/,/; $R[0] =~ m/(\\d\\d\\d\\d-\\d\\d-\\d\\d)T(\\d\\d):(\\d\\d):(\\d\\d)/; $s=$2*3600+$3*60+$4; print join(%s, $1, $s, @R);' |%s)", ID, qCOMMA, DAYSPLITTER);
+#print DATAFILE;
 
 set datafile separator ",";
 
-sma_24_init(x) = (k24=k23=k22=k21=k20=k19=k18=k17=k16=k15=k14=k13=k12=k11=k10=k9=k8=k7=k6=k5=k4=k3=k2=k1=x);
-sma_24_shift(x) = (k24=k23, k23=k22, k22=k21, k21=k20, k20=k19, k19=k18, k18=k17, k17=k16, K16=k15, K15=k14, k14=k13, k13=k12, k12=k11, k11=k10, k10=k9, k9=k8, k8=k7, k7=k6, k6=k5, k5=k4, k4=k3, k3=k2, k2=k1, k1 = x);
-sma_24_RO(x) = (k24+k23+k22+k21+k20+k19+k18+k17+k16+k15+k14+k13+k12+k11+k10+k9+k8+k7+k6+k5+k4+k3+k2+k1)/24;
-sma_24(x) = (sma_24_shift(x), sma_24_RO(x));
-
-set xdata time; set timefmt x "%H:%M:%S" . CONFIG_TZ; set format x "%H:%M " . CONFIG_TZ;
-set zdata time; set timefmt z "%Y-%m-%d"; set format z "%Y-%m-%d";
+set xrange [0:86399]; set xdata time; set format x "%H:%M\n" . CONFIG_TZ; set xtics 3600 offset graph 0,graph 0.05;
+set ydata time; set timefmt "%Y-%m-%d"; set format y "%Y-%m-%d"; set ytics 86400 offset graph 0.01, graph 0;
 
 set title sprintf("sensor=%d", ID);
-set grid x; set xrange ["00:10:00":"23:50:00"];
-#set yrange [60:100];
-set zrange ["2014-04-15":"2014-04-25"];
-set view 360,0;
-splot \
-	a = sma_24_init(250), \
-	DATAFILE u 2:(sma_24($3)):1 w l;
+set grid x;
+set grid y;
+set hidden3d offset 0;
+#set dgrid3d 30, 24*2;
+#set samples 300;
 
-#cat cache/49.csv |perl -MStatistics::Descriptive  -e 'while (<>){ m#\d{4}-\d{2}-\d{2}T(\d{2}):\d{2}:\d{2}JST,([0-9.]+)#; $A{$1}=Statistics::Descriptive::Sparse->new() unless (defined $A{$1}); $A{$1}->add_data($2);} print map {sprintf("%s,%0.3f,%0.3f,%d\n", $_, $A{$_}->mean(), 3.0 * $A{$_}->standard_deviation(),$A{$_}->count())} sort keys %A;'
-#reset; set datafile separator ","; set xrange [-0.5:24.5]; set xtics 0 6; set format x "%02.0f"; plot "49_daily.csv" u 1:2 w lines lw 3 title "daily average CPM (per hour)", "" u 1:2:3 w yerrorbars notitle
+set pm3d at b;
+set palette defined ( 0 "green", 1 "blue", 2 "red", 3 "orange" );
+set border 4095;
+
+set view 110,350; set xyplane 2;
+splot DATAFILE using (timecolumn(2,"%s")):1:5 w l lw 4 palette title "SMA large";
