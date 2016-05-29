@@ -9,21 +9,24 @@ set grid xtics front;
 S_START=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_START);
 S_END=strptime("%Y-%m-%dT%H:%M:%S" . CONFIG_TZ, PERIOD_END);
 END_YEAR=system("TZ=" . CONFIG_TIMEZONE . " date +%Y --date='" . PERIOD_END . "'");
-set xdata time;
+
 set xrange [ S_START : S_END ]; # set xlabel "timestamp";
+
+set xdata time; set timefmt "%Y-%m-%dT%H:%M:%S" . CONFIG_TZ; set format x "%Y-%m-%d\n%H:%M " . CONFIG_TZ;
 
 # small PNGs for Fusion tables
 FONT="Futura Std Medium";
 set term png enhanced notransparent nointerlace truecolor butt font FONT . ",7" size CONFIG_WIDTH_SMALL, CONFIG_HEIGHT_SMALL background "#ffffff";
 set output OUTFILE_small;
 
-unset title; unset ytics; unset y2tics;
-set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.1f";
+unset title;
+unset ytics; unset y2tics;
+set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.2f";
 set grid x y;
-set format x "%m/%d";
-set xtics offset 0, graph 0.03; set label 32 END_YEAR at graph 0.5, graph -0.17 center;
+set format x "%m/%d"; set xtics offset 0, graph 0.03; set label 32 END_YEAR at graph 0.5, graph -0.17 center;
 
-plot -1 w l notitle;
+plot \
+	-1 w l notitle;
 unset title; unset for [i in "31 32"] label i;
 
 
@@ -34,10 +37,13 @@ set term pngcairo enhanced color solid notransparent background "#ffffff" font F
 set output sprintf("out/%d_%dx%d.png", ID, WIDTH, HEIGHT);
 
 unset title;
-set yrange [0: 1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.1f";
+set yrange [-0.1: +1.1]; set ytics mirror; set label 31 "μSv/h" at graph 0.0, graph 1.0 right offset -0.5, 0.5; set format y "%0.2f";
 set grid x y;
-set label 40 sprintf("%d", ID) at graph 0.5, graph 0.75 center font FONT . ",100" back textcolor rgb "#dddddd";
-plot -1 w l notitle;
+set format x "%m/%d"; set xtics offset 0, graph 0.03; set xlabel END_YEAR offset 0,1;
+# add sensor ID within the graph
+set label 40 sprintf("%d", ID) at graph 0.5, graph 0.5 center font FONT . ",100" back textcolor rgb "#dddddd";
+plot \
+	-1 w l notitle;
 
-unset title; unset for [i in "31 32 40"] label i;
+unset title; unset for [i in "31 32 40"] label i; unset xlabel;
 
