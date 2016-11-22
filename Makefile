@@ -1,4 +1,5 @@
-MAKEFLAGS += --no-builtin-rules --output-sync=target --jobs 8 --max-load 3.5
+MAKEFLAGS += --no-builtin-rules --output-sync=target
+
 .SUFFIXES:
 
 CONFIG := Makefile.config

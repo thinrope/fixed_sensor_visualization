@@ -1,3 +1,6 @@
+# Adjust this to local machine specs
+MAKEFLAGS += --jobs 8 --max-load 5.5
+
 # SMA smoothing related, in bins
 CONFIG_SMA1 := 288
 CONFIG_SMA2 := 24
