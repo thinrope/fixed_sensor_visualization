@@ -166,16 +166,16 @@ daily/%.png:	daily/%.csv $(CONFIG) | daily/
 	@gnuplot -e 'reset; set term png enhanced notransparent nointerlace truecolor butt font "Arial Unicode MS,8" size 800, 600 background "#ffffef"; set output "$@"; set datafile separator ","; set xrange [-0.5:24.5]; set grid; set format x "%02.0f"; plot "$<" u ($$1+0.5):2 w lines lw 3 title "daily average CPM (per hour)", "" u ($$1+0.5):2:3 w yerrorbars title "3σ";'
 	@echo -e "\t$@ plotted."
 
-cache/devices.csv:	cache/devices.json
+tmp/devices.csv:	cache/devices.json
 	@cat $< |perl -ne 'print join("|", $$+{id},"$$+{lat} $$+{lon}",$$+{location},$$+{last_updated}),"\n" while (/"id":"(?<id>[0-9]+)","lat":"(?<lat>[\+\-0-9.]+)","lon":"(?<lon>[\+\-0-9.]+)","location":"(?<location>[^"]+)","updated":"(?<last_updated>\d\d\d\d-\d\d-\d\dT\d\d\:\d\d\:\d\d\.\d\d\dZ)"/g)' >$@
 
-print_devices:	cache/devices.csv
+print_devices:	tmp/devices.csv
 	@cat $< |sort -n |column -s"|" -t;
 
-print_devices_online:	cache/devices.csv
+print_devices_online:	tmp/devices.csv
 	@cat $< |fgrep $$(TZ=Z date +%FT --date '1 hour ago') | sort -n |column -s"|" -t;
 
-test:	cache/devices.csv
+test:	tmp/devices.csv
 	@echo "It is $(NOW) in $(CONFIG_TIMEZONE)."
 	@echo "Current version: $(VERSION)$(SOURCE_STATUS)"
 	@echo -e "LIVE: $(LIVE_SENSORS)"
@@ -190,7 +190,7 @@ test:	cache/devices.csv
 	@echo "From the above, currently the following has updated recently (=live)"
 	@echo
 	@{ \
-		cat cache/devices.csv | \
+		cat tmp/devices.csv | \
 		fgrep $$(TZ=Z date +%FT --date '1 hour ago') | \
 		fgrep -w -f tmp/to_add | \
 		sort -n|column -s"|" -t; \
@@ -199,7 +199,7 @@ test:	cache/devices.csv
 	@echo "Those sensors are marked as DEAD, though they sent data recently... <-- those may need to be moved to TEST in in/nGeigie_map.csv"
 	@echo
 	@{ \
-		cat cache/devices.csv | \
+		cat tmp/devices.csv | \
 		fgrep $$(TZ=Z date +%FT --date '1 hour ago') | \
 		fgrep -w -f tmp/resurrected | \
 		sort -n|column -s"|" -t; \
@@ -212,7 +212,7 @@ test:	cache/devices.csv
 	@echo
 
 clean:
-	@rm -rf cache/* tmp/* daily/*
+	@rm -rf tmp/* daily/* cache/devices.json
 	@echo -ne "clean:\tdone.\n"
 
 distclean:	clean
