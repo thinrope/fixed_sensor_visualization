@@ -216,7 +216,7 @@ clean:
 	@echo -ne "clean:\tdone.\n"
 
 distclean:	clean
-	@rm -rf out/ daily/
+	@rm -rf cache/* out/ daily/
 	@echo -ne "distclean:\tdone.\n"
 
 force:
