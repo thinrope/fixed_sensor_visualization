@@ -76,3 +76,5 @@
 200092,20009,120,"TEST_sensor","USA","MA, Cambridge, #2","LND 712","GM_tube","42.381242 -71.111946","2016-11-22: TEST;"
 201011,20101,334,"DEAD_sensor","USA","D.C., NRDC #1","LND 73126","GM_tube","38.931143 -76.982839","2015-11-01: TEST; 2016-05-05: ->fixed; 2016-08-13: ->DEAD;"
 201012,20101,120,"DEAD_sensor","USA","D.C., NRDC #2","LND 712","GM_tube","38.931143 -76.982839","2015-11-01: TEST; 2016-05-05: ->fixed; 2016-08-13: ->DEAD;"
+330091,33009,334,"TEST_sensor","Japan","Fukushima-ken, Okuma-shi, Minamidai #1","LND 73126","GM_tube","37.407707 141.015335","2018-01-20: TEST"
+330092,33009,120,"TEST_sensor","Japan","Fukushima-ken, Okuma-shi, Minamidai #2","LND 7128","GM_tube","37.407707 141.015335","2018-01-20: TEST"
