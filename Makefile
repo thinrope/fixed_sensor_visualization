@@ -79,6 +79,15 @@ cache/devices.json:	cache/.run ${CONFIG}
 	@$(SYNC_CMD2)
 	@echo -e "\t$@ fetched."
 
+out/%_$(CONFIG_WIDTH_HUGE)x$(CONFIG_HEIGHT_HUGE).png:
+	@make $(@:_$(CONFIG_WIDTH_HUGE)x$(CONFIG_HEIGHT_HUGE).png=.png)
+
+out/%_$(CONFIG_WIDTH_SMALL)x$(CONFIG_HEIGHT_SMALL).png:
+	@make $(@:_$(CONFIG_WIDTH_SMALL)x$(CONFIG_HEIGHT_SMALL).png=.png)
+
+out/%_window.png:
+	@make $(@:_window.png=.png)
+
 out/%.png:	cache/%.csv in/nGeigie_map.csv timeplot.gpl $(CONFIG) | out/ tmp/
 	@echo "Plotting $@ ..."
 	-@gnuplot -e "ID=$(basename $(notdir $@)); $(GNUPLOT_VARS)" ./timeplot.gpl
