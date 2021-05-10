@@ -17,7 +17,7 @@
 75,,334,"fixed_sensor","Taiwan","Taipei, Fabcafe","LND 7318","GM_tube","25.0439 121.5290","2015-05: old 75 renamed to 9975; 2015-06-18: TEST --> fixed"
 77,,150,"DEAD_sensor","UNKNOWN","somewhere on Earth","SBM-20","GM_tube","34.56 140.77",
 78,,960,"DEAD_sensor","USA","CA, Bodega Head (in water)","LND 78017","GM_tube","38.3151 -123.0752","2015-08-31: fixed sensor type (ID reuse) to LND78017 in seawater, moved to TEST; 2016-05-05: -> DEAD; 2016-05-22: ->TEST_sensor; 2021-05-10: ->DEAD"
-79,,334,"fixed_sensor","USA","HI, Haiku","LND 7313","GM_tube","20.9109 -156.2887","IMI Hawk Radius Probe #1059"
+79,,334,"DEAD_sensor","USA","HI, Haiku","LND 7313","GM_tube","20.9109 -156.2887","IMI Hawk Radius Probe #1059; 2021-05-10: ->DEAD"
 80,,310,"DEAD_sensor","UNKNOWN","somewhere on Earth","SI-180G","GM_tube","34.56 140.80","2021-05-10: ->DEAD"
 83,,120,"DEAD_sensor","UNKNOWN","somewhere on Earth","LND712","GM_tube","34.56 140.83","2015-08-31: unify sensor spelling; 2016-04-16 -> DEAD"
 84,,120,"DEAD_sensor","UNKNOWN","somewhere on Earth","LND712","GM_tube","34.56 140.84","2015-08-31: unify sensor spelling; 2021-05-10: ->DEAD"
